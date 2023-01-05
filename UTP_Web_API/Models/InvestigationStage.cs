@@ -4,5 +4,6 @@
     {
         public int InvestigationStageId { get; set; }
         public string Stage { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }

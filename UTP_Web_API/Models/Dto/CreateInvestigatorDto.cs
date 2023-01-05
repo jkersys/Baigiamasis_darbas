@@ -6,6 +6,6 @@
         public string PazymejimoNumeris { get; set; }
         public string KabinetoNumeris { get; set; }
         public string DarboAdresas { get; set; }
-
+        public int UserId { get; set; }
     }
 }
