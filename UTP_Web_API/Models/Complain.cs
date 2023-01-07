@@ -12,5 +12,7 @@
         public Conclusion Conclusion { get; set; }
         public LocalUser LocalUser { get; set; }
         
+        public string Conclusion { get; set; }
+        public IEnumerable<InvestigationStage> Stages { get; set; }
     }
 }
