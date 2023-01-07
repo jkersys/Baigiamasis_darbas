@@ -3,6 +3,6 @@
     public class Conclusion
     {
        public int ConclusionId { get; set; }
-       public string Resolution { get; set; }
+       public string Decision { get; set; }
     }
 }
