@@ -1,9 +1,13 @@
-﻿namespace UTP_Web_API.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace UTP_Web_API.Models
 {
     public class AdministrativeInspection
     {
-        public int AdministrativeInspectionId { get; set; }
-        public string CompanyId { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int AdministrativeInspectionId { get; set; }    
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime UpdateDate { get; set; }

@@ -1,6 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using UTP_Web_API.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<UtpContext>(option =>
+{
+    option.UseSqlite(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+});
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

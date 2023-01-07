@@ -1,13 +1,25 @@
-﻿namespace UTP_Web_API.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace UTP_Web_API.Models
 {
     public class Company
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Required]
         public int CompanyId { get; set; }
+        [Required]
         public int CompanyRegistrationNumber { get; set; }
+        [Required]
         public string CompanyName { get; set; }
-        public string CompanyAdress { get; set; }
+        [Required]
+        public string CompanyAdress { get; set; }     
         public string CompanyEmail { get; set; }
         public string CompanyPhone { get; set; }
+        public IEnumerable<Investigation> Investigations { get; set; }
+        public IEnumerable<AdministrativeInspection> AdministrativeInspections { get; set; }
+
 
     }
 }
