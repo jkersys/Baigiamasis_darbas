@@ -14,8 +14,8 @@ namespace UTP_Web_API.Models
         public DateTime EndDate { get; set; }
         public Conclusion Conclusion { get; set; }
         public int Penalty { get; set; }
-        public IEnumerable<InvestigationStage> Stages { get; set; }
-        public IEnumerable<Investigator> Investigators { get; set; }
+        public ICollection<InvestigationStage> Stages { get; set; }
+        public ICollection<Investigator> Investigators { get; set; }
         public Company Company { get; set; }
     }
 }

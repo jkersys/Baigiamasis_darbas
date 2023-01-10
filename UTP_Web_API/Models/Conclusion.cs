@@ -9,8 +9,8 @@ namespace UTP_Web_API.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ConclusionId { get; set; }
         public string? Decision { get; set; }
-        public IEnumerable<Complain>? Complains { get; set; }
-        public IEnumerable<AdministrativeInspection> AdministrativeInspections { get; set; }
-        public IEnumerable<Investigation> Investigations { get; set; }
+        public ICollection<Complain>? Complains { get; set; }
+        public ICollection<AdministrativeInspection> AdministrativeInspections { get; set; }
+        public ICollection<Investigation> Investigations { get; set; }
     }
 }

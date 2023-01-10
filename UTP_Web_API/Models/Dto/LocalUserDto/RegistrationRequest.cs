@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace UTP_Web_API.Models.Dto
+namespace UTP_Web_API.Models.Dto.LocalUserDto
 {
     public class RegistrationRequest
     {
@@ -14,6 +14,6 @@ namespace UTP_Web_API.Models.Dto
         public string Password { get; set; }
         [Required]
         public long PhoneNumber { get; set; }
-        
+
     }
 }

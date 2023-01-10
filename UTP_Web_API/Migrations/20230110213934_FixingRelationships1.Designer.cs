@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UTP_Web_API.Database;
 
@@ -10,9 +11,11 @@ using UTP_Web_API.Database;
 namespace UTPWebAPI.Migrations
 {
     [DbContext(typeof(UtpContext))]
-    partial class UtpContextModelSnapshot : ModelSnapshot
+    [Migration("20230110213934_FixingRelationships1")]
+    partial class FixingRelationships1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -299,7 +302,7 @@ namespace UTPWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("LocalUserRef")
+                    b.Property<int>("LocalUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("WorkAdress")
@@ -308,7 +311,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasKey("InvestigatorId");
 
-                    b.HasIndex("LocalUserRef")
+                    b.HasIndex("LocalUserId")
                         .IsUnique();
 
                     b.ToTable("Investigator");
@@ -498,7 +501,7 @@ namespace UTPWebAPI.Migrations
                 {
                     b.HasOne("UTP_Web_API.Models.LocalUser", "LocalUser")
                         .WithOne("Investigator")
-                        .HasForeignKey("UTP_Web_API.Models.Investigator", "LocalUserRef")
+                        .HasForeignKey("UTP_Web_API.Models.Investigator", "LocalUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

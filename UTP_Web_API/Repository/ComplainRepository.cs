@@ -17,25 +17,16 @@ namespace UTP_Web_API.Repository
 
         public async Task<IEnumerable<Complain>> All()
         {
-            var complains = _db.Complain.Include(x => x.Conclusion).Include(x => x.Stages).Include(x => x.Investigator).ToList();
+            var complains = _db.Complain.Include(x => x.Investigator.LocalUser).Include(x => x.LocalUser).Include(x => x.Conclusion).ToList();
             return complains;
         }
 
-        public Complain GetById(int id)
+        public async Task<Complain> GetById(int id)
         {
-            var complain = _db.Complain.Include(x => x.LocalUser).Include(x => x.Conclusion).Include(x => x.Investigator).First(x => x.ComplainId == id);
-           // var complains = _db.Complain.First(x => x.ComplainId == id);
+            var complain = await _db.Complain.Include(x => x.LocalUser).Include(x => x.Conclusion).Include(x => x.Investigator.LocalUser).FirstOrDefaultAsync(x => x.ComplainId == id);
             return complain;
         }
-
-        //public override async Task<List<Complain>> GetAllAsync(Expression<Func<Complain, bool>>? filter = null)
-        //{
-        //    IQueryable<Complain> query = _dbSet;
-        //    if (filter != null)
-        //    {
-        //        query = query.Where(filter);
-        //    }
-        //    return await query.ToListAsync();
+               
     }
     }
 

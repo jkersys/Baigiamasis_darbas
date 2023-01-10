@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using UTP_Web_API.Models.Dto;
+using UTP_Web_API.Models;
+using UTP_Web_API.Models.Dto.LocalUserDto;
 using UTP_Web_API.Repository.IRepository;
 using UTP_Web_API.Services.IServices;
 
@@ -12,35 +14,29 @@ namespace UTP_Web_API.Controllers
     {
         private readonly IUserRepository _userRepo;
         private readonly IJwtService _jwtService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserRepository userRepo, IJwtService jwtService)
+        public UserController(IUserRepository userRepo, IJwtService jwtService, ILogger<UserController> logger)
         {
             _userRepo = userRepo;
             _jwtService = jwtService;
+            _logger = logger;
         }
 
 
         /// <summary>
         /// Tikrina vartotojo prisiloginima, ar sutampa vartotojo email ir password su duomenu bazeje esanciais 
         /// </summary>
-        /// <param name="model"></param>
+        /// <param></param>
         /// <returns></returns>
         [HttpPost("login")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-
-        //padarys async
+            
         public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
-        //    var isOk = _userRepo.TryLogin(model.Email, model.Password, out var user);
-        //    if (!isOk)
-        //        return Unauthorized("Bad username or password");
-
-        //    var token = _jwtService.GetJwtToken(user.Id, user.Role.ToString());
-
-        //    return Ok(new LoginResponse { Email = model.Email, Token = token });
-
-
+           _logger.LogInformation("User {date} tried login with {model} email adress",DateTime.Now, model.Email);
             var loginResponse = await _userRepo.LoginAsync(model);
 
             if (loginResponse.Email == null || string.IsNullOrEmpty(loginResponse.Token))
@@ -50,9 +46,9 @@ namespace UTP_Web_API.Controllers
                 return Ok(loginResponse);
         }
         /// <summary>
-        ///Vartotojo regisracija 
+        ///Vartotojo regisracija, tikrinama ar vartotojo su tokiu pat Email nera duomenu bazeje 
         /// </summary>
-        /// <param name="model"></param>
+        /// <param></param>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -76,21 +72,42 @@ namespace UTP_Web_API.Controllers
             }
 
             return Created(nameof(Login), new { id = user.Id });
-
-            //return Ok();
-
-
-
-            //[ProducesResponseType(StatusCodes.Status201Created)]
-            //[ProducesResponseType(StatusCodes.Status401Unauthorized)]
-            //[Produces("application/json")]
-            //[Consumes("application/json")]
-            //[HttpPost("register")]
-            //public async Task<IActionResult> ChangeRole([FromBody] RegistrationRequest model)
-            //{
-
-            //}
+            
         }
+
+        [HttpPatch("patch/{id:int}", Name = "UpdateUserRole")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> UpdateUserRole(int id, JsonPatchDocument<LocalUser> request)
+        {
+            if (id == 0 || request == null)
+            {
+                return BadRequest();
+            }
+
+            var userExist = await _userRepo.ExistAsync(id);
+            if (!userExist)
+            {
+                return NotFound();
+            }
+
+            var foundUser = await _userRepo.GetAsync(d => d.Id == id);
+
+            request.ApplyTo(foundUser, ModelState);
+
+            await _userRepo.UpdateAsync(foundUser);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return NoContent();
+
+
+        }
+
     }
 }
 

@@ -15,8 +15,8 @@ namespace UTP_Web_API.Models
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public Conclusion? Conclusion { get; set; }
-        public LocalUser LocalUser { get; set; }        
+        public LocalUser LocalUser { get; set; }
         public Investigator? Investigator { get; set; }
-        public IEnumerable<InvestigationStage>? Stages { get; set; }
+        public ICollection<InvestigationStage>? Stages { get; set; }
     }
 }

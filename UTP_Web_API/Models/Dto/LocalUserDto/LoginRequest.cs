@@ -1,4 +1,4 @@
-﻿namespace UTP_Web_API.Models.Dto
+﻿namespace UTP_Web_API.Models.Dto.LocalUserDto
 {
     public class LoginRequest
     {

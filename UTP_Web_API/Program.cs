@@ -28,7 +28,7 @@ builder.Services.AddScoped<IComplainAdapter, ComplainAdapter>();
 builder.Services.AddScoped<IInvestigatorRepository, InvestigatorRepository>();
 builder.Services.AddScoped<IInvestigatorAdapter, InvestigatorAdapter>();
 
-
+builder.Services.AddHttpContextAccessor();
 
 
 builder.Services.AddControllers();
@@ -45,21 +45,23 @@ builder.Services.AddAuthentication(x =>
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer(x =>
-    {
-        x.RequireHttpsMetadata = false;
-        x.SaveToken = true;
-        x.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
+
 
 builder.Services.AddControllers()
-               .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+    .AddNewtonsoftJson()
+    .AddJsonOptions(option => option.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -124,7 +126,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("corsforUtp");
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

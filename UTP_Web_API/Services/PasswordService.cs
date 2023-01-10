@@ -6,12 +6,7 @@ namespace UTP_Web_API.Services
 {
     public class PasswordService : IPasswordService
     {
-        /// <summary>
-        /// Uzkoduojam/uz'hashinam slaptazodi
-        /// </summary>
-        /// <param name="password"></param>
-        /// <param name="passwordHash"></param>
-        /// <param name="passwordSalt"></param>
+        
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using var hmac = new HMACSHA256();

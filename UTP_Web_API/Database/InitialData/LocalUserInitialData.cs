@@ -11,7 +11,7 @@ namespace UTP_Web_API.Database.InitialData
             byte[] passwordSalt;
             byte[] passwordHash;
 
-            passwordService.CreatePasswordHash("testpassword", out passwordHash, out passwordSalt);
+            passwordService.CreatePasswordHash("admin", out passwordHash, out passwordSalt);
 
             return new LocalUser[] {
                 new LocalUser

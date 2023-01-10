@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UTP_Web_API.Database;
 
@@ -10,9 +11,11 @@ using UTP_Web_API.Database;
 namespace UTPWebAPI.Migrations
 {
     [DbContext(typeof(UtpContext))]
-    partial class UtpContextModelSnapshot : ModelSnapshot
+    [Migration("20230110223900_FixingRelationshipsBetweenLocalUserAndInvestigator1")]
+    partial class FixingRelationshipsBetweenLocalUserAndInvestigator1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");

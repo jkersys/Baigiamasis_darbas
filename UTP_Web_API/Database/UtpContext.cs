@@ -22,9 +22,13 @@ namespace UTP_Web_API.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            modelBuilder.Entity<Conclusion>().HasData(ConclusionInitialData.DataSeed);
-           modelBuilder.Entity<LocalUser>().HasData(LocalUserInitialData.GetDataSeed());
-          //modelBuilder.Entity<Complain>().HasOne(x => x.Investigator).WithOne
+            //modelBuilder.Entity<LocalUser>().HasData(LocalUserInitialData.GetDataSeed());
+            //modelBuilder.Entity<Complain>().HasOne(x => x.Investigator).WithOne
 
+            modelBuilder.Entity<LocalUser>()
+            .HasOne(b => b.Investigator)
+            .WithOne(i => i.LocalUser)
+            .HasForeignKey<Investigator>(b => b.LocalUserRef);
         }
     }
 }

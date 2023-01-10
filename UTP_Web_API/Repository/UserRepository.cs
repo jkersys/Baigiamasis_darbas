@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Text;
 using UTP_Web_API.Database;
 using UTP_Web_API.Models;
-using UTP_Web_API.Models.Dto;
+using UTP_Web_API.Models.Dto.LocalUserDto;
 using UTP_Web_API.Repository.IRepository;
 using UTP_Web_API.Services.IServices;
 
@@ -20,7 +20,7 @@ namespace UTP_Web_API.Repository
             _db = db;
             _passwordService = passwordService;
             _jwtService = jwtService;
-        }             
+        }
 
         public async Task<bool> ExistAsync(int userId)
         {
@@ -31,7 +31,7 @@ namespace UTP_Web_API.Repository
         /// <summary>
         /// Should return a flag indicating if a user with a specified username already exists
         /// </summary>
-        /// <param name="username">Registration username</param>
+        /// <param name="email">Registration username</param>
         /// <returns>A flag indicating if username already exists</returns>
         public async Task<bool> IsUniqueUserAsync(string email)
         {
@@ -48,11 +48,6 @@ namespace UTP_Web_API.Repository
             var inputPasswordBytes = Encoding.UTF8.GetBytes(loginRequest.Password);
             var user = await _db.LocalUser.FirstOrDefaultAsync(x => x.Email.ToLower() == loginRequest.Email.ToLower());
 
-          //  if(user == null)
-          //  {
-          //      return new LoginResponse {Token = "", Email = null };
-          //  }
-
             if (user == null || !_passwordService.VerifyPasswordHash(loginRequest.Password, user.PasswordHash, user.PasswordSalt))
             {
                 return new LoginResponse
@@ -68,11 +63,11 @@ namespace UTP_Web_API.Repository
             {
                 Token = token,
                 Email = user.Email
-            };          
+            };
 
             return loginResponse;
         }
-               
+
 
         // Add RegistrationResponse (Should not include password)
         // Add adapter classes to map to wanted classes
@@ -87,7 +82,7 @@ namespace UTP_Web_API.Repository
                 LastName = registrationRequest.LastName,
                 PhoneNumber = registrationRequest.PhoneNumber,
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,                
+                PasswordSalt = passwordSalt,
             };
 
             _db.LocalUser.Add(user);
@@ -96,20 +91,6 @@ namespace UTP_Web_API.Repository
             return user;
         }
 
-        public bool TryLogin(string email, string password, out LocalUser? user)
-        {
-            user = _db.LocalUser.FirstOrDefault(x => x.Email == email);
-            if (user == null)
-            {
-                return false;
-            }
-
-            if (!_passwordService.VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-            {
-                return false;
-            }
-            return true;
-        }
 
         public async Task<LocalUser> GetAsync(Expression<Func<LocalUser, bool>> filter)
         {
@@ -118,13 +99,22 @@ namespace UTP_Web_API.Repository
             return user;
         }
 
-        //public async Task<LocalUser> ChangeUserRoleAsync(int userId, string role)
-        //{
-        //    var isRegistered = await _db.LocalUser.AnyAsync(u => u.Id == userId);
+        public async Task<LocalUser> UpdateAsync(LocalUser user)
+        {
+
+            _db.Update(user);
+            await _db.SaveChangesAsync();
+
+            return user;
 
 
-        //    return isRegistered;
-        //}
+        }
+
+        public async Task<LocalUser> GetUser(string email)
+        {
+            return await _db.LocalUser.FirstOrDefaultAsync(x => x.Email == email);
+        }
+
 
 
     }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UTP_Web_API.Database;
 
@@ -10,9 +11,11 @@ using UTP_Web_API.Database;
 namespace UTPWebAPI.Migrations
 {
     [DbContext(typeof(UtpContext))]
-    partial class UtpContextModelSnapshot : ModelSnapshot
+    [Migration("20230110223211_FixingRelationshipsBetweenLocalUserAndInvestigator")]
+    partial class FixingRelationshipsBetweenLocalUserAndInvestigator
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -299,17 +302,11 @@ namespace UTPWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("LocalUserRef")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("WorkAdress")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("InvestigatorId");
-
-                    b.HasIndex("LocalUserRef")
-                        .IsUnique();
 
                     b.ToTable("Investigator");
                 });
@@ -333,6 +330,9 @@ namespace UTPWebAPI.Migrations
                     b.Property<int>("InvestigatorId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("InvestigatorRef")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(70)
@@ -354,6 +354,9 @@ namespace UTPWebAPI.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InvestigatorRef")
+                        .IsUnique();
 
                     b.ToTable("LocalUser");
                 });
@@ -494,15 +497,15 @@ namespace UTPWebAPI.Migrations
                     b.Navigation("Conclusion");
                 });
 
-            modelBuilder.Entity("UTP_Web_API.Models.Investigator", b =>
+            modelBuilder.Entity("UTP_Web_API.Models.LocalUser", b =>
                 {
-                    b.HasOne("UTP_Web_API.Models.LocalUser", "LocalUser")
-                        .WithOne("Investigator")
-                        .HasForeignKey("UTP_Web_API.Models.Investigator", "LocalUserRef")
+                    b.HasOne("UTP_Web_API.Models.Investigator", "Investigator")
+                        .WithOne("LocalUser")
+                        .HasForeignKey("UTP_Web_API.Models.LocalUser", "InvestigatorRef")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("LocalUser");
+                    b.Navigation("Investigator");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Company", b =>
@@ -524,14 +527,14 @@ namespace UTPWebAPI.Migrations
             modelBuilder.Entity("UTP_Web_API.Models.Investigator", b =>
                 {
                     b.Navigation("Complains");
+
+                    b.Navigation("LocalUser")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.LocalUser", b =>
                 {
                     b.Navigation("Complains");
-
-                    b.Navigation("Investigator")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

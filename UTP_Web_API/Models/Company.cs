@@ -17,8 +17,8 @@ namespace UTP_Web_API.Models
         public string CompanyAdress { get; set; }     
         public string CompanyEmail { get; set; }
         public string CompanyPhone { get; set; }
-        public IEnumerable<Investigation> Investigations { get; set; }
-        public IEnumerable<AdministrativeInspection> AdministrativeInspections { get; set; }
+        public ICollection<Investigation> Investigations { get; set; }
+        public ICollection<AdministrativeInspection> AdministrativeInspections { get; set; }
 
 
     }
