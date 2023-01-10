@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UTP_Web_API.Database;
 
@@ -10,9 +11,11 @@ using UTP_Web_API.Database;
 namespace UTPWebAPI.Migrations
 {
     [DbContext(typeof(UtpContext))]
-    partial class UtpContextModelSnapshot : ModelSnapshot
+    [Migration("20230108124928_AddedPasswordPropAndAdminDataSeed")]
+    partial class AddedPasswordPropAndAdminDataSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.1");
@@ -29,7 +32,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("InvestigationStagesInvestigationStageId");
 
-                    b.ToTable("AdministrativeInspectionInvestigationStage", (string)null);
+                    b.ToTable("AdministrativeInspectionInvestigationStage");
                 });
 
             modelBuilder.Entity("AdministrativeInspectionInvestigator", b =>
@@ -44,7 +47,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("InvestigatorsInvestigatorId");
 
-                    b.ToTable("AdministrativeInspectionInvestigator", (string)null);
+                    b.ToTable("AdministrativeInspectionInvestigator");
                 });
 
             modelBuilder.Entity("ComplainInvestigationStage", b =>
@@ -59,7 +62,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("StagesInvestigationStageId");
 
-                    b.ToTable("ComplainInvestigationStage", (string)null);
+                    b.ToTable("ComplainInvestigationStage");
                 });
 
             modelBuilder.Entity("InvestigationInvestigationStage", b =>
@@ -74,7 +77,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("StagesInvestigationStageId");
 
-                    b.ToTable("InvestigationInvestigationStage", (string)null);
+                    b.ToTable("InvestigationInvestigationStage");
                 });
 
             modelBuilder.Entity("InvestigationInvestigator", b =>
@@ -89,7 +92,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("InvestigatorsInvestigatorId");
 
-                    b.ToTable("InvestigationInvestigator", (string)null);
+                    b.ToTable("InvestigationInvestigator");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.AdministrativeInspection", b =>
@@ -119,7 +122,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("ConclusionId");
 
-                    b.ToTable("AdministrativeInspection", (string)null);
+                    b.ToTable("AdministrativeInspection");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Company", b =>
@@ -149,7 +152,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasKey("CompanyId");
 
-                    b.ToTable("Company", (string)null);
+                    b.ToTable("Company");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Complain", b =>
@@ -162,14 +165,14 @@ namespace UTPWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("ConclusionId")
+                    b.Property<int>("ConclusionId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("EndDate")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("InvestigatorId")
@@ -189,7 +192,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("LocalUserId");
 
-                    b.ToTable("Complain", (string)null);
+                    b.ToTable("Complain");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Conclusion", b =>
@@ -204,7 +207,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasKey("ConclusionId");
 
-                    b.ToTable("Conclusion", (string)null);
+                    b.ToTable("Conclusion");
 
                     b.HasData(
                         new
@@ -265,7 +268,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("ConclusionId");
 
-                    b.ToTable("Investigation", (string)null);
+                    b.ToTable("Investigation");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.InvestigationStage", b =>
@@ -283,7 +286,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasKey("InvestigationStageId");
 
-                    b.ToTable("InvestigationStage", (string)null);
+                    b.ToTable("InvestigationStage");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Investigator", b =>
@@ -311,7 +314,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("LocalUserId");
 
-                    b.ToTable("Investigator", (string)null);
+                    b.ToTable("Investigator");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.LocalUser", b =>
@@ -332,6 +335,10 @@ namespace UTPWebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("BLOB");
@@ -348,7 +355,21 @@ namespace UTPWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LocalUser", (string)null);
+                    b.ToTable("LocalUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "admin@admin.lt",
+                            FirstName = "Admin",
+                            LastName = "Admin",
+                            Password = "admin",
+                            PasswordHash = new byte[0],
+                            PasswordSalt = new byte[0],
+                            PhoneNumber = 866666666L,
+                            Role = 4
+                        });
                 });
 
             modelBuilder.Entity("AdministrativeInspectionInvestigationStage", b =>
@@ -449,9 +470,11 @@ namespace UTPWebAPI.Migrations
                 {
                     b.HasOne("UTP_Web_API.Models.Conclusion", "Conclusion")
                         .WithMany("Complains")
-                        .HasForeignKey("ConclusionId");
+                        .HasForeignKey("ConclusionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("UTP_Web_API.Models.Investigator", "Investigator")
+                    b.HasOne("UTP_Web_API.Models.Investigator", null)
                         .WithMany("Complains")
                         .HasForeignKey("InvestigatorId");
 
@@ -462,8 +485,6 @@ namespace UTPWebAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Conclusion");
-
-                    b.Navigation("Investigator");
 
                     b.Navigation("LocalUser");
                 });

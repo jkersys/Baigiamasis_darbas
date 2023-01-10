@@ -13,9 +13,10 @@ namespace UTP_Web_API.Models
         [Required]
         public string CompanyInformation { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public Conclusion Conclusion { get; set; }
+        public DateTime? EndDate { get; set; }
+        public Conclusion? Conclusion { get; set; }
         public LocalUser LocalUser { get; set; }        
-        public IEnumerable<InvestigationStage> Stages { get; set; }
+        public Investigator? Investigator { get; set; }
+        public IEnumerable<InvestigationStage>? Stages { get; set; }
     }
 }

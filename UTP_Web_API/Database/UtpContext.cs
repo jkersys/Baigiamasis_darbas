@@ -22,6 +22,9 @@ namespace UTP_Web_API.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            modelBuilder.Entity<Conclusion>().HasData(ConclusionInitialData.DataSeed);
+           modelBuilder.Entity<LocalUser>().HasData(LocalUserInitialData.GetDataSeed());
+          //modelBuilder.Entity<Complain>().HasOne(x => x.Investigator).WithOne
+
         }
     }
 }

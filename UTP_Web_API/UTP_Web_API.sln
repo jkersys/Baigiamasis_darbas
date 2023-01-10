@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UTP_Web_API", "UTP_Web_API.csproj", "{ED8F3C1D-A045-46B8-95A2-DB97A606C494}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UTP_Web_API", "UTP_Web_API.csproj", "{ED8F3C1D-A045-46B8-95A2-DB97A606C494}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

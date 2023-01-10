@@ -8,8 +8,8 @@ namespace UTP_Web_API.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ConclusionId { get; set; }
-        public string Decision { get; set; }
-        public IEnumerable<Complain> Complains { get; set; }
+        public string? Decision { get; set; }
+        public IEnumerable<Complain>? Complains { get; set; }
         public IEnumerable<AdministrativeInspection> AdministrativeInspections { get; set; }
         public IEnumerable<Investigation> Investigations { get; set; }
     }
