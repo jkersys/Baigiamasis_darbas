@@ -10,6 +10,7 @@
         public long TelefonoNumeris { get; set; }
         public string SituacijosAprasymas { get; set; }
         public string DuomenysApieSkundziamaImone { get; set; }
+        public ICollection<GetInvestigationStagesDto>? Etapas { get; set; }
         public DateTime SkundasPaduodas { get; set; }
         public DateTime? SkundrasIsnagrinetas { get; set; }
         public string? Isvada { get; set; }

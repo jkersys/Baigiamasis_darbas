@@ -27,6 +27,12 @@ builder.Services.AddScoped<IComplainRepository, ComplainRepository>();
 builder.Services.AddScoped<IComplainAdapter, ComplainAdapter>();
 builder.Services.AddScoped<IInvestigatorRepository, InvestigatorRepository>();
 builder.Services.AddScoped<IInvestigatorAdapter, InvestigatorAdapter>();
+builder.Services.AddScoped<IConclusionRepository, ConclusionRepository>();
+builder.Services.AddScoped<IConclusionAdapter, ConclusionAdapter>();
+builder.Services.AddScoped<IInvestigationStagesRepository, InvestigationStageRepository>();
+builder.Services.AddScoped<IInvestigatorComplainsRepository, InvestigatorComplainsRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+
 
 builder.Services.AddHttpContextAccessor();
 

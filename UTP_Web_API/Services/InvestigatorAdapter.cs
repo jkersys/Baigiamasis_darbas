@@ -1,5 +1,6 @@
 ﻿using UTP_Web_API.Models;
 using UTP_Web_API.Models.Dto.InvestigatorDto;
+using UTP_Web_API.Services.IServices;
 
 namespace UTP_Web_API.Services
 {

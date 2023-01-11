@@ -1,7 +1,7 @@
 ﻿using UTP_Web_API.Models;
 using UTP_Web_API.Models.Dto.InvestigatorDto;
 
-namespace UTP_Web_API.Services
+namespace UTP_Web_API.Services.IServices
 {
     public interface IInvestigatorAdapter
     {

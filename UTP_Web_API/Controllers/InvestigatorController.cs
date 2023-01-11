@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.AspNetCore.Mvc;
 using UTP_Web_API.Models.Dto.InvestigatorDto;
 using UTP_Web_API.Repository.IRepository;
-using UTP_Web_API.Services;
+using UTP_Web_API.Services.IServices;
 
 namespace UTP_Web_API.Controllers
 {

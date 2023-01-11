@@ -17,15 +17,17 @@ namespace UTP_Web_API.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUserRepository _userRepo;
         private readonly IInvestigatorRepository _investigatorRepo;
+        private readonly IInvestigationStagesRepository _stagesRepo;
 
         public ComplainsController(IComplainRepository complainRepo, IComplainAdapter complainAdapter,
-              IUserRepository userRepo, IHttpContextAccessor httpContextAccessor, IInvestigatorRepository investigatorRepo)
+              IUserRepository userRepo, IHttpContextAccessor httpContextAccessor, IInvestigatorRepository investigatorRepo, IInvestigationStagesRepository stagesRepo)
         {
             _complainRepo = complainRepo;
             _complainAdapter = complainAdapter;
             _userRepo = userRepo;
             _httpContextAccessor = httpContextAccessor;
             _investigatorRepo = investigatorRepo;
+            _stagesRepo = stagesRepo;
         }
 
         //[Authorize(Roles = "Customer")]
@@ -78,6 +80,10 @@ namespace UTP_Web_API.Controllers
         {
             var currentUserId = int.Parse(_httpContextAccessor.HttpContext.User.Identity.Name);
 
+            //LocalUser = Roles
+            //Investigator
+            //Complians pagal investigrator
+
 
             if (complain == null)
             {
@@ -110,10 +116,12 @@ namespace UTP_Web_API.Controllers
             }
             var foundComplain = await _complainRepo.GetAsync(c => c.ComplainId == id);
             var foundInvestigator = await _investigatorRepo.GetAsync(i => i.InvestigatorId == updateComplainDto.TyrejoId);
-            var stage = new InvestigationStage { Stage = updateComplainDto.AtliekamiVeiksmai, TimeStamp = DateTime.Now };
-            
+            var stage = new InvestigationStage { Stage = updateComplainDto.AtliekamiVeiksmai, 
+                TimeStamp = DateTime.Now,
+            };
+
             foundComplain.Investigator = foundInvestigator;
-            foundComplain.Stages?.Add(stage);
+            foundComplain.Stages.Add(stage);
 
             await _complainRepo.Update(foundComplain);
            // var mapedComplainUpdates = await _complainAdapter.Bind(foundComplain, foundInvestigator, updateComplainDto.AtliekamiVeiksmai);

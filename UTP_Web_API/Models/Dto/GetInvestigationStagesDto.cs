@@ -5,10 +5,10 @@
         public GetInvestigationStagesDto(InvestigationStage stage)
         {
             Etapas = stage.Stage;
-            EtapoPradzia = stage.TimeStamp;
+            EtapoPradzia = stage.TimeStamp.ToString("yyyy-MM-dd");
         }
 
         public string Etapas { get; set; }
-        public DateTime EtapoPradzia { get; set; }
+        public string EtapoPradzia { get; set; } 
     }
 }

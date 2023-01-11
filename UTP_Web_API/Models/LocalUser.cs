@@ -22,9 +22,8 @@ namespace UTP_Web_API.Models
         public long PhoneNumber { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }      
-        public int InvestigatorId { get; set; }
         public UserRole Role { get; set; }              
         public IEnumerable<Complain>? Complains { get; set; }
-        public Investigator Investigator { get; set; }      
+        public Investigator Investigator { get; set; }
     }
 }

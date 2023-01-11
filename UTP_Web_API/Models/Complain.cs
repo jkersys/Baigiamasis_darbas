@@ -5,6 +5,10 @@ namespace UTP_Web_API.Models
 {
     public class Complain
     {
+        public Complain()
+        {
+            Stages = new List<InvestigationStage>();
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ComplainId { get; set; }       
@@ -17,6 +21,6 @@ namespace UTP_Web_API.Models
         public Conclusion? Conclusion { get; set; }
         public LocalUser LocalUser { get; set; }
         public Investigator? Investigator { get; set; }
-        public ICollection<InvestigationStage>? Stages { get; set; }
+        public ICollection<InvestigationStage> Stages { get; set; }
     }
 }

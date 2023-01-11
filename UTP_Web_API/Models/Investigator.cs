@@ -12,7 +12,7 @@ namespace UTP_Web_API.Models
         public string CabinetNumber { get; set; }
         public string WorkAdress { get; set; }
         public LocalUser LocalUser { get; set; }
-        public int LocalUserRef { get; set; }
+        public int LocalUserId { get; set; }
         public virtual ICollection<Investigation> Investigations { get; set; }
         public virtual ICollection<AdministrativeInspection> AdministrativeInspections { get; set; }
         public virtual ICollection<Complain> Complains { get; set; }

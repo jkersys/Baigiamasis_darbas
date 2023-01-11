@@ -1,4 +1,5 @@
 ﻿using UTP_Web_API.Models;
+using UTP_Web_API.Models.Dto;
 using UTP_Web_API.Models.Dto.ComplainDto;
 using UTP_Web_API.Services.IServices;
 
@@ -27,6 +28,7 @@ namespace UTP_Web_API.Services
                 DuomenysApieSkundziamaImone = complain.CompanyInformation,
                 SkundasPaduodas = complain.StartDate,
                 SkundrasIsnagrinetas = complain.EndDate,
+                Etapas = complain.Stages.Select(st => new GetInvestigationStagesDto(st)).ToList(),
                 Tyrejas = complain.Investigator?.LocalUser.FirstName + " " + complain.Investigator?.LocalUser.LastName,
                 TyrejoTelefonoNumeris = complain.Investigator?.LocalUser.PhoneNumber,
                 Isvada = complain.Conclusion?.Decision,

@@ -3,11 +3,6 @@ using System.Linq.Expressions;
 using UTP_Web_API.Database;
 using UTP_Web_API.Repository.IRepository;
 
-namespace UTP_Web_API.Repository
-{
-
-
-}
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 {
     private readonly UtpContext _db;
@@ -18,10 +13,12 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         _db = db;
         _dbSet = _db.Set<TEntity>();
     }
-    public async Task CreateAsync(TEntity entity)
+    public async Task<TEntity> CreateAsync(TEntity entity)
     {
         _dbSet.Add(entity);
         await SaveAsync();
+
+        return entity;
     }
 
     public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, bool tracked = true)
