@@ -24,6 +24,13 @@ namespace UTP_Web_API.Database
            modelBuilder.Entity<Conclusion>().HasData(ConclusionInitialData.DataSeed);
             //modelBuilder.Entity<LocalUser>().HasData(LocalUserInitialData.GetDataSeed());
             //modelBuilder.Entity<Complain>().HasOne(x => x.Investigator).WithOne
+
+
+       //     modelBuilder
+       //.Entity<Complain>()
+       //.HasMany(e => e.Stages)
+       //.WithOne(e => e.Complain)
+       //.OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

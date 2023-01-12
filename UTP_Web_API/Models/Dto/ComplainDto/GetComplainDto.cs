@@ -1,4 +1,6 @@
-﻿namespace UTP_Web_API.Models.Dto.ComplainDto
+﻿using UTP_Web_API.Models.Dto.InvestigationStageDto;
+
+namespace UTP_Web_API.Models.Dto.ComplainDto
 {
     public class GetComplainDto
     {

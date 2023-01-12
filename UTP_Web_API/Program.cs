@@ -32,6 +32,12 @@ builder.Services.AddScoped<IConclusionAdapter, ConclusionAdapter>();
 builder.Services.AddScoped<IInvestigationStagesRepository, InvestigationStageRepository>();
 builder.Services.AddScoped<IInvestigatorComplainsRepository, InvestigatorComplainsRepository>();
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<ICompanyAdapter, CompanyAdapter>();
+builder.Services.AddScoped<IInvestigationRepository, InvestigationRepository>();
+builder.Services.AddScoped<IInvestigationAdapter, InvestigationAdapter>();
+builder.Services.AddScoped<IAdministrativeInspectionRepository, AdministrativeInspectionRepository>();
+builder.Services.AddScoped<IAdministrativeInspectionAdapter, AdministrativeInspectionAdapter>();
+
 
 
 builder.Services.AddHttpContextAccessor();

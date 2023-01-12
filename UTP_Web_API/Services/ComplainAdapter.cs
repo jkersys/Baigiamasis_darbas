@@ -1,6 +1,7 @@
 ﻿using UTP_Web_API.Models;
 using UTP_Web_API.Models.Dto;
 using UTP_Web_API.Models.Dto.ComplainDto;
+using UTP_Web_API.Models.Dto.InvestigationStageDto;
 using UTP_Web_API.Services.IServices;
 
 namespace UTP_Web_API.Services

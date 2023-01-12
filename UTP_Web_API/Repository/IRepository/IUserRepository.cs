@@ -13,5 +13,6 @@ namespace UTP_Web_API.Repository.IRepository
         Task<LocalUser> GetAsync(Expression<Func<LocalUser, bool>> filter);
         Task<LocalUser> UpdateAsync(LocalUser user);
         Task<LocalUser> GetUser(string email);
+        Task<LocalUser> GetUserById(int id);
     }
 }

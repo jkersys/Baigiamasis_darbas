@@ -11,10 +11,11 @@ namespace UTP_Web_API.Services
             return new Investigator()
             {
                 
-                LocalUser = user,
+                LocalUser = user,                
                 CertificationId = createInvestigator.PazymejimoNumeris,
                 CabinetNumber = createInvestigator.KabinetoNumeris,
                 WorkAdress = createInvestigator.DarboAdresas
+                
             };
         }
 

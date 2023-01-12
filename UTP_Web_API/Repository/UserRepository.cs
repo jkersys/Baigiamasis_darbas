@@ -112,7 +112,11 @@ namespace UTP_Web_API.Repository
 
         public async Task<LocalUser> GetUser(string email)
         {
-            return await _db.LocalUser.FirstOrDefaultAsync(x => x.Email == email);
+            return await _db.LocalUser.Include(x => x.Investigator).FirstOrDefaultAsync(x => x.Email == email);
+        }
+        public async Task<LocalUser> GetUserById(int id)
+        {
+            return await _db.LocalUser.Include(x => x.Investigator).FirstOrDefaultAsync(x => x.Id == id);
         }
 
 

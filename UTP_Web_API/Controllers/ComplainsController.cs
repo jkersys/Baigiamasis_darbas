@@ -80,11 +80,6 @@ namespace UTP_Web_API.Controllers
         {
             var currentUserId = int.Parse(_httpContextAccessor.HttpContext.User.Identity.Name);
 
-            //LocalUser = Roles
-            //Investigator
-            //Complians pagal investigrator
-
-
             if (complain == null)
             {
                 return BadRequest();
@@ -124,11 +119,36 @@ namespace UTP_Web_API.Controllers
             foundComplain.Stages.Add(stage);
 
             await _complainRepo.Update(foundComplain);
-           // var mapedComplainUpdates = await _complainAdapter.Bind(foundComplain, foundInvestigator, updateComplainDto.AtliekamiVeiksmai);
 
             return NoContent();
 
         }
+
+        [HttpDelete("complains/delete/{id:int}")]
+        //[Authorize(Roles = "super-admin")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> DeleteComplain(int id)
+        {
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+
+            var complain = await _complainRepo.GetAsync(d => d.ComplainId == id);
+
+            if (complain == null)
+            {
+                return NotFound();
+            }
+            complain.Stages.Clear();
+            await _complainRepo.RemoveAsync(complain);
+
+            return NoContent();
+        }
+
     }
-    
+
 }

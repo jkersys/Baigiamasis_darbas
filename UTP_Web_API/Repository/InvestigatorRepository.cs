@@ -20,7 +20,7 @@ namespace UTP_Web_API.Repository
 
             public async Task<Investigator> GetById(int id)
             {
-                var complain = await _db.Investigator.Include(x => x.LocalUser).FirstOrDefaultAsync(x => x.InvestigatorId == id);
+                var complain = await _db.Investigator.Include(x => x.LocalUser).Include(x => x.Complains).Include(x => x.AdministrativeInspections).Include(x => x.Investigations).FirstOrDefaultAsync(x => x.InvestigatorId == id);
                 return complain;
             }
         }

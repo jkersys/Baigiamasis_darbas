@@ -24,6 +24,6 @@ namespace UTP_Web_API.Models
         public byte[] PasswordSalt { get; set; }      
         public UserRole Role { get; set; }              
         public IEnumerable<Complain>? Complains { get; set; }
-        public Investigator Investigator { get; set; }
+        public Investigator? Investigator { get; set; }
     }
 }

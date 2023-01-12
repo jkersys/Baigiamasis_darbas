@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UTP_Web_API.Models.Dto.ConclusionDto;
 using UTP_Web_API.Repository.IRepository;
 using UTP_Web_API.Services.IServices;
 
@@ -25,15 +26,15 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddConclusionToComplain(int complainId, int conclusionId)
+        public async Task<ActionResult> AddConclusionToComplain(int complainId, AddConclusionToCaseDto conclusion)
         {
-            if (conclusionId == null)
+            if (conclusion == null)
             {
                 return BadRequest();
             }
            
             var foundComplain = await _complainRepo.GetById(complainId);
-            var foundConclusion = await _conclusionRepo.GetAsync(i => i.ConclusionId == conclusionId);
+            var foundConclusion = await _conclusionRepo.GetAsync(i => i.ConclusionId == conclusion.ConclusionId);
 
             if (foundComplain == null || foundConclusion == null)
             {
@@ -53,7 +54,6 @@ namespace UTP_Web_API.Controllers
             return NoContent();
 
         }
-
-
+                
     }
 }

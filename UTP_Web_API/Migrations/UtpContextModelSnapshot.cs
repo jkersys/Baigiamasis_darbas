@@ -29,7 +29,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("InvestigatorsInvestigatorId");
 
-                    b.ToTable("AdministrativeInspectionInvestigator", (string)null);
+                    b.ToTable("AdministrativeInspectionInvestigator");
                 });
 
             modelBuilder.Entity("InvestigationInvestigator", b =>
@@ -44,7 +44,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("InvestigatorsInvestigatorId");
 
-                    b.ToTable("InvestigationInvestigator", (string)null);
+                    b.ToTable("InvestigationInvestigator");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.AdministrativeInspection", b =>
@@ -56,16 +56,16 @@ namespace UTPWebAPI.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ConclusionId")
+                    b.Property<int?>("ConclusionId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("UpdateDate")
+                    b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("AdministrativeInspectionId");
@@ -74,7 +74,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("ConclusionId");
 
-                    b.ToTable("AdministrativeInspection", (string)null);
+                    b.ToTable("AdministrativeInspection");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Company", b =>
@@ -104,7 +104,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasKey("CompanyId");
 
-                    b.ToTable("Company", (string)null);
+                    b.ToTable("Company");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Complain", b =>
@@ -144,7 +144,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("LocalUserId");
 
-                    b.ToTable("Complain", (string)null);
+                    b.ToTable("Complain");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Conclusion", b =>
@@ -159,7 +159,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasKey("ConclusionId");
 
-                    b.ToTable("Conclusion", (string)null);
+                    b.ToTable("Conclusion");
 
                     b.HasData(
                         new
@@ -198,10 +198,10 @@ namespace UTPWebAPI.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ConclusionId")
+                    b.Property<int?>("ConclusionId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("EndDate")
+                    b.Property<DateTime?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LegalBase")
@@ -220,7 +220,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("ConclusionId");
 
-                    b.ToTable("Investigation", (string)null);
+                    b.ToTable("Investigation");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.InvestigationStage", b =>
@@ -253,7 +253,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasIndex("InvestigationId");
 
-                    b.ToTable("InvestigationStage", (string)null);
+                    b.ToTable("InvestigationStage");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Investigator", b =>
@@ -282,7 +282,7 @@ namespace UTPWebAPI.Migrations
                     b.HasIndex("LocalUserId")
                         .IsUnique();
 
-                    b.ToTable("Investigator", (string)null);
+                    b.ToTable("Investigator");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.LocalUser", b =>
@@ -323,7 +323,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LocalUser", (string)null);
+                    b.ToTable("LocalUser");
                 });
 
             modelBuilder.Entity("AdministrativeInspectionInvestigator", b =>
@@ -366,9 +366,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasOne("UTP_Web_API.Models.Conclusion", "Conclusion")
                         .WithMany("AdministrativeInspections")
-                        .HasForeignKey("ConclusionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ConclusionId");
 
                     b.Navigation("Company");
 
@@ -408,9 +406,7 @@ namespace UTPWebAPI.Migrations
 
                     b.HasOne("UTP_Web_API.Models.Conclusion", "Conclusion")
                         .WithMany("Investigations")
-                        .HasForeignKey("ConclusionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ConclusionId");
 
                     b.Navigation("Company");
 
@@ -423,13 +419,15 @@ namespace UTPWebAPI.Migrations
                         .WithMany("InvestigationStages")
                         .HasForeignKey("AdministrativeInspectionId");
 
-                    b.HasOne("UTP_Web_API.Models.Complain", null)
+                    b.HasOne("UTP_Web_API.Models.Complain", "Complain")
                         .WithMany("Stages")
                         .HasForeignKey("ComplainId");
 
                     b.HasOne("UTP_Web_API.Models.Investigation", null)
                         .WithMany("Stages")
                         .HasForeignKey("InvestigationId");
+
+                    b.Navigation("Complain");
                 });
 
             modelBuilder.Entity("UTP_Web_API.Models.Investigator", b =>
