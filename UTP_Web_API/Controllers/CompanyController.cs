@@ -91,7 +91,7 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddInvestigatorToComplain(int id, CreateCompanyDto updateCompanyDto)
+        public async Task<ActionResult> UpdateCompany(int id, CreateCompanyDto updateCompanyDto)
         {
             if (updateCompanyDto == null)
             {

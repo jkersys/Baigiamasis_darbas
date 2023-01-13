@@ -14,8 +14,8 @@ namespace UTP_Web_API.Repository
         }
         public async Task<IEnumerable<Investigation>> All()
         {
-            var investigations = _db.Investigation.Include(x => x.Investigators).ThenInclude(x => x.LocalUser).Include(x => x.Conclusion).Include(x => x.Company).Include(x => x.Stages);
-            return await investigations.ToListAsync();
+            var investigations = await _db.Investigation.Include(x => x.Investigators).ThenInclude(x => x.LocalUser).Include(x => x.Conclusion).Include(x => x.Company).Include(x => x.Stages).ToListAsync();
+            return  investigations;
             //return complain;
         }
         public async Task<Investigation> GetById(int id)

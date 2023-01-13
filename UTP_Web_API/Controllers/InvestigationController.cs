@@ -16,15 +16,26 @@ namespace UTP_Web_API.Controllers
         private readonly IInvestigatorRepository _investigatorRepo;
         private readonly ICompanyRepository _companyRepo;
         private readonly IInvestigationAdapter _investigationAdapter;
+        private readonly ILogger<InvestigationController> _logger;
 
-        public InvestigationController(IInvestigationRepository investigatonRepo, IInvestigatorRepository investigatorRepo, ICompanyRepository companyRepo, IInvestigationAdapter investigationAdapter)
+        public InvestigationController(IInvestigationRepository investigatonRepo, IInvestigatorRepository investigatorRepo, ICompanyRepository companyRepo, IInvestigationAdapter investigationAdapter, ILogger<InvestigationController> logger)
         {
             _investigatonRepo = investigatonRepo;
             _investigatorRepo = investigatorRepo;
             _companyRepo = companyRepo;
             _investigationAdapter = investigationAdapter;
+            _logger = logger;
         }
 
+        /// <summary>
+        /// Grazina viena tyrima su pilnai duomenimis
+        /// </summary>
+        /// <param name="id">imone, tyrimo etapas, tyrimo pradzios laikas, pabaigos laikas, isvada, tyrejas, baudos dydis </param>
+        /// <returns></returns>
+        /// <response code="200">OK</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="500">Internal server error</response>
         //[Authorize(Roles = "Customer")]
         [HttpGet("investigation/{id:int}", Name = "GetInvestigation")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOneInvestigationDto))]
@@ -35,37 +46,78 @@ namespace UTP_Web_API.Controllers
         [Consumes("application/json")]
         public async Task<ActionResult<GetOneInvestigationDto>> GetInvestigationById(int id)
         {
-            if (id == 0)
+            try
             {
-                return BadRequest();
+                _logger.LogInformation($"{DateTime.Now} atempt to get investigation with id {id} ");
+                if (id == 0)
+                {
+                    _logger.LogInformation($"{DateTime.Now} Input {id} is not valid");
+                    return BadRequest();
+                }
+                if (await _investigatonRepo.ExistAsync(x => x.InvestigationId == id) == false)
+                {
+                    _logger.LogInformation($"{DateTime.Now} Investigation with {id} not found");
+                    return NotFound();
+                }
+                var complain = await _investigatonRepo.GetById(id);
+
+                var complainDto = _investigationAdapter.BindForOneInvestigation(complain);
+
+                return Ok(complainDto);
             }
-            if (await _investigatonRepo.ExistAsync(x => x.InvestigationId == id) == false)
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError(ex, $"{DateTime.Now} GetInvestigationById exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-            var complain = await _investigatonRepo.GetById(id);
-
-            var complainDto = _investigationAdapter.BindForOneInvestigation(complain);
-
-            return Ok(complainDto);
         }
 
+        /// <summary>
+        /// Grazina visus tyrimus, atvaizduojant tik dali duomenu
+        /// </summary>
+        /// <param name="id">imone, tyrimo etapas, tyrimo pradzios laikas, pabaigos laikas, isvada, tyrejas, baudos dydis </param>
+        /// <returns></returns>
+        /// <response code="200">OK</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="500">Internal server error</response>
         [HttpGet("investigations")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetInvestigationsDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetInvestigations()
+        public async Task<IActionResult> GetAllInvestigations()
         {
-            var investigations = await _investigatonRepo.All();
-
-            if (investigations == null)
+            try
             {
-                return NotFound();
+                _logger.LogInformation($"{DateTime.Now} atempt to get all investigations");
+                var investigations = await _investigatonRepo.All();
+
+                if (investigations == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} Investigations not found");
+                    return NotFound();
+                }
+                return Ok(investigations
+                .Select(c => _investigationAdapter.Bind(c))
+                .ToList());
             }
-            return Ok(investigations
-            .Select(c => _investigationAdapter.Bind(c))
-            .ToList());
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{DateTime.Now} GetAllInvestigations exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
+        /// <summary>
+        /// Atnaujina tyrimo duomenis, pakeicia imone, teisini pagrinda, prideda nauja tyreja ir bylos etapa
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="updateComplainDto"></param>
+        /// <returns></returns>
+        /// <response code="204">No Content</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="500">Internal server error</response>
         [HttpPut("investigation/update/{id:int}")]
         // [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -74,13 +126,18 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> UpdateInvestigation(int id, UpdateInvestigationDto updateComplainDto)
         {
-            if (updateComplainDto == null)
+            try 
+            { 
+            _logger.LogInformation($"{DateTime.Now} Atempt to update investigation");
+            if (id == 0 || updateComplainDto == null)
             {
-                return BadRequest();
+                    _logger.LogInformation($"{DateTime.Now} input {id} or {updateComplainDto} not valid");
+                    return BadRequest();
             }
             if (await _investigatonRepo.ExistAsync(x => x.InvestigationId == id) == false)
             {
-                return NotFound();
+                    _logger.LogInformation($"{DateTime.Now} Investigation Nr. {id} not exist");
+                    return NotFound();
             }
             var foundCompany = await _companyRepo.GetAsync(i => i.CompanyId == updateComplainDto.CompanyId);
             var foundInvestigation = await _investigatonRepo.GetById(id);
@@ -97,44 +154,78 @@ namespace UTP_Web_API.Controllers
             await _investigatonRepo.Update(foundInvestigation);
 
             return NoContent();
-
         }
+         catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{DateTime.Now} UpdateInvestigation exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+    }
+}
 
-
+        /// <summary>
+        /// Sukuriamas naujas tyrimas
+        /// </summary>
+        /// <param name="investigationDto"></param>
+        /// <param name="updateComplainDto"></param>
+        /// <returns></returns>
+        /// <response code="201">Created</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="500">Internal server error</response>
         [HttpPost("investigation")]
         // [Authorize(Roles = "admin")]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CreateInvestigationDto))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GetInvestigationsDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<CreateInvestigationDto>> CreateInvestigation(CreateInvestigationDto investigation)
+        public async Task<ActionResult<GetInvestigationsDto>> CreateInvestigation(CreateInvestigationDto investigationDto)
         {
-            if (investigation == null)
+            try
             {
-                return BadRequest();
-            }            
-            var foundInvestigator = await _investigatorRepo.GetAsync(c => c.InvestigatorId == investigation.InvestigatorId);
-            var foundCompany = await _companyRepo.GetAsync(i => i.CompanyId == investigation.CompanyId);
-            var stage = new InvestigationStage
-            {
-                Stage = investigation.InvestigationStage,
-                TimeStamp = DateTime.Now,
-            };
-            if (foundInvestigator == null || foundCompany == null)
-            {
-                return BadRequest();
+                _logger.LogInformation($"{DateTime.Now} Atempt to create investigation");
+
+                if (investigationDto == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} input {investigationDto} not valid");
+                    return BadRequest();
+                }
+                var foundInvestigator = await _investigatorRepo.GetAsync(c => c.InvestigatorId == investigationDto.InvestigatorId);
+                var foundCompany = await _companyRepo.GetAsync(i => i.CompanyId == investigationDto.CompanyId);
+                var stage = new InvestigationStage
+                {
+                    Stage = investigationDto.InvestigationStage,
+                    TimeStamp = DateTime.Now,
+                };
+                if (foundInvestigator == null || foundCompany == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} Company or investigator is not found in database");
+                    return BadRequest();
+                }
+
+                var newInvestigation = new Investigation();
+                newInvestigation.Company = foundCompany;
+                newInvestigation.LegalBase = investigationDto.LegalBase;
+                newInvestigation.StartDate = DateTime.Now;
+                newInvestigation.Investigators?.Add(foundInvestigator);
+                newInvestigation.Stages?.Add(stage);
+
+                await _investigatonRepo.CreateAsync(newInvestigation);
+                return CreatedAtRoute("GetInvestigation", new { id = newInvestigation.InvestigationId }, _investigationAdapter.BindForOneInvestigation(newInvestigation));
             }
-
-            var newInvestigation = new Investigation();
-            newInvestigation.Company = foundCompany;
-            newInvestigation.LegalBase = investigation.LegalBase;
-            newInvestigation.StartDate = DateTime.Now;
-            newInvestigation.Investigators?.Add(foundInvestigator);           
-            newInvestigation.Stages?.Add(stage);           
-
-            await _investigatonRepo.CreateAsync(newInvestigation);
-            return Ok();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{DateTime.Now} CreateInvestigator exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
+        /// <summary>
+        /// Istrinamas tyrimas is duomenu bazes
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        ///  <response code="204">OK</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="500">Internal server error</response>
         [HttpDelete("investigation/delete/{id:int}")]
         //[Authorize(Roles = "super-admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -143,20 +234,29 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> DeleteInvestigation(int id)
         {
-            if (id == 0)
+            try
             {
-                return BadRequest();
+                _logger.LogInformation($"{DateTime.Now} atempt to delete investigation with id {id} ");
+                if (id == 0)
+            {
+                    _logger.LogInformation($"{DateTime.Now} invalid input {id}");
+                    return BadRequest();
             }
             var investigation = await _investigatonRepo.GetAsync(d => d.InvestigationId == id);
 
             if (investigation == null)
             {
-                return NotFound();
+                    _logger.LogInformation($"{DateTime.Now} investigation with id {id} was not found");
+                    return NotFound();
             }
-
             await _investigatonRepo.RemoveAsync(investigation);
-
             return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{DateTime.Now} DeleteInvestigator exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
     }

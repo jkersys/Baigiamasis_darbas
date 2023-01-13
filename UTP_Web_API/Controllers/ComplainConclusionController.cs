@@ -20,7 +20,7 @@ namespace UTP_Web_API.Controllers
             _complainAdapter = complainAdapter;
             _conclusionRepo = conclusionRepo;
         }
-        [HttpPut("investigator/complains/conclusion/update/{complainId:int}")]
+        [HttpPut("complains/{complainId:int}/conclusions")]
         // [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
