@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>BitFood Pagrindinis</title>
+</head>
+<body>
+    <main class="container main-class">
+        <header class="main-header">
+            <h1 class="header-h1">Unfair Trade Practise/h1>
+            <nav>
+                <a href="./index.html">Pradinis</a>
+                <a href="./registration.html">Registracija</a>
+                <a href="./login.html">Prisijungimas</a>
+                <a href="./menu.html" class="active">Menu</a>
+                <a href="./complains.html">Complains</a>
+                <a href="./investigations.html">Investigations</a>
+
+            </nav>
+        </header>
+        <article>
+            <hr>
+            <section>
+                <h2>Čia pateikiama informacija apie skundus</h2>
+            </section>
+            <p class="error-message"></p>
+            <div id ="investigation-container">
+                <div><p>Užpildykite skundo formą</p></div>
+                <form id="investigation-form">
+                    <div class="investigation-input-container">
+                    <div>   <label for="company">Select company</label>
+                   <select name="companyId" id="companyId" required></select></div>
+    
+                            <div class="label-container"><label for="name">Legal base</label>
+                           <input type="text" name="legalBase" id="legalBase" placeholder=""></div>
+    
+                        <div class="label-container"><label for="name">Stage</label>
+                      <input type="text" name="investigationStage" id="investigationStage" placeholder="" ></div>
+                        <div><label for="Investigators">Select investigator</label>
+                          <select name="investigatorId" id="investigatorId" required>
+                        </select></div>
+                        <div> <input type="button" id="investigation-form-submit" value="Submit"></div>
+
+                     <br/><br/>
+                    
+                     
+                     </div>
+                    </form>
+                    <div id="investigation">
+                      
+                    </div>
+                </article>
+            </main>
+    </main>
+    <script src="js/app-investigation.js"></script>
+</body>
+</html>

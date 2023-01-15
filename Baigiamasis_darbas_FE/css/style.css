@@ -1,0 +1,429 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    color: #444;
+    font-family: sans-serif;
+    border-top: 10px solid #1098ad;
+    position: relative;
+}
+
+/* Itakoja visus elementus, kurie turi .container klase */
+/* .container {
+    border: 1px solid black;
+    width: 800px;
+    margin: 0 auto;
+} */
+
+/* Itakoja tik main, kuris turi .container klase */
+/* main.container yra daug stipriau nei .container del to stilius visada prioriteta detu main.container */
+main.container {
+    /* Centruoja konteineri */
+    justify-content: center;
+    margin: 50px;
+}
+
+/* Prioritetas dedamas pagal eiliskuma ir pagal Selector tiksluma */
+/* .main-class {
+    width: 100px;
+}
+main {
+    width: 200px;
+} */
+
+main header.main-header {
+    background-color: #f7f7f7;
+    padding: 20px 40px;
+    margin-bottom: 60px;
+}
+
+nav {
+    font-size: 18px;
+}
+
+h1,
+h2,
+h3 {
+    color: #1098ad;
+}
+
+h1 {
+    font-size: 26px;
+    text-transform: uppercase;
+    font-style: italic;
+}
+
+h2 {
+    margin: 10px;
+    font-size: 40px;
+    margin-bottom: 30px;
+}
+
+h3 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+h4 {
+    font-size: 20px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+p {
+    font-size: 22px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+ul,
+ol {
+    margin-left: 50px;
+    margin-bottom: 20px;
+}
+
+li {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+li:last-child {
+    margin-bottom: 0px;
+}
+
+#author {
+    font-style: italic;
+    font-size: 18px;
+}
+
+#copyright {
+    font-size: 8px;
+}
+
+.related-author {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.related {
+    list-style: none;
+}
+
+.post-img {
+    width: 100%;
+    height: auto;
+}
+
+li:first-child {
+    font-weight: bold;
+}
+
+li:last-child {
+    font-style: italic;
+}
+
+li:nth-child(even) {
+    color:darkslategrey;
+}
+
+article p:first-child {
+    color: red;
+}
+
+a:link {
+    color:#1098ad;
+    text-decoration: none;
+}
+
+a:visited {
+    color:#1098ad;
+}
+
+a:hover {
+    color: orangered;
+    font-weight: bold;
+    text-decoration: underline orangered;
+}
+
+a:active {
+    background-color: black;
+    font-style: italic;
+}
+
+nav a:link {
+    margin-right: 30px;
+    margin-top: 20px;
+}
+
+a.active {
+    text-decoration: underline;
+    font-weight: 700;
+    color: #0b6d7d;
+}
+
+#menu-items {
+    background-color: #f7f7f7;
+    min-height: 600px;
+}
+
+.menu-h-section h2 {
+    margin: 20px;
+}
+
+.menu-item {
+    display: flex;
+}
+
+.menu-item-info {
+    padding: 15px;
+}
+
+.menu-item-name h3 {
+    margin: 0;
+}
+
+input[type="text"], input[type="password"] {
+    border: 1px solid black;
+    background-color: azure;
+    display: block;
+    padding: 3px;
+    margin-top: 5px;
+}
+
+label::after {
+    content: ":";
+}
+
+
+input[type="button"] {
+    padding: 10px;
+    background-color: #0c4e58;
+    color: white;
+    border-radius: 5px;
+}
+
+#userAndLogout {
+    display: block;
+    justify-content: end;
+    width: 750px;
+    padding: 5px;
+    height: 100px;
+}
+#userAndLogout div{
+    display: flex;
+    justify-content: end;
+    width: 750px;
+    padding: 5px;
+
+}
+
+.container-logout-btn {
+    padding-right: 250px;
+    padding-bottom: 30px;
+    display: flex;
+    align-items: left;
+}
+
+
+
+.input-container {
+    padding-top: 5px;
+    grid-template-columns: 1fr max-content;
+    text-align: center;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+    justify-content: center;
+}
+
+.input-container input {
+    width: 400px;
+    border-radius: 25px;
+    padding: 10px;
+    opacity: 0.9;
+    font-size: larger;
+    font-style: normal;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.label-container {
+    width: 250px;
+    justify-content: end;
+}
+
+.input-container label {
+    text-align: center;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.postType {
+    width: 150px;
+
+}
+
+#return-btn {
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+}
+
+#container-logout-btn {
+    display: flex;
+    align-items: left;
+}
+
+#print-user-posts {
+    border: 2px solid black;
+    width: 600px;
+    background-color: black;
+    color: white;
+    margin-top: 10px;
+
+}
+
+.dataContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.printedDataContainer {
+    border: 1px solid rgb(136, 135, 135);
+    width: 1400px;
+    display: grid;
+    grid-template-columns: 150px 80px 150px 150px 150px 50px 50px 150px 150px 70px 150px;
+    gap: 10px;
+    justify-content: center;
+    font-size:medium;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.printedDataContainerInvestigations {
+    border: 1px solid rgb(136, 135, 135);
+    width: 1400px;
+    display: grid;
+    grid-template-columns: 150px  150px 150px 150px 150px  150px 150px 150px ;
+    gap: 10px;
+    justify-content: center;
+    font-size:medium;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.printedDataContainerInvestigation {
+    border: 1px solid rgb(136, 135, 135);
+    width: 1400px;
+    display: grid;
+    grid-template-columns: 150px  150px 150px 150px 150px 150px 150px 150px     ;
+    gap: 10px;
+    justify-content: center;
+    font-size:medium;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+.printedDataContainer div{
+    text-align: center;
+    padding: 2px;
+    border:0px    
+}
+
+.printedDataContainerInvestigations div{
+    text-align: center;
+    padding: 2px;
+    border:0px    
+}
+
+    
+
+#addTodo{
+padding-top: 5px;
+padding-bottom: 5px;   
+}
+#post_btn_container{
+ padding: 30px;
+}
+#btn_post {
+    background-color: rgb(199, 24, 24);
+    height: 30px;
+    width: 70px;
+    border-radius: 25px;
+}
+.button_container {
+    display: flex;
+    justify-content: space-evenly;
+    height: 30px;
+}
+
+.button_container input {
+    width: 60px;
+    display: flex;
+    justify-content: space-evenly;
+    height: 30px;
+}
+
+.postContent {
+    word-break: break-all;
+}
+
+
+.printedDataContainer input {
+    opacity: 0.9;
+    font-size: small;
+    font-style: normal;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#fieldTypeError {
+    visibility: hidden;
+    font-size: 12px;
+    color: red;
+}
+
+#fieldContentError {
+    visibility: hidden;
+    font-size: 12px;
+    color: red;
+}
+
+#fieldDateError {
+    visibility: hidden;
+    font-size: 12px;
+    color: red;
+}
+
+#menu-items {
+width:max-content;
+height:min-content;
+}
+
+#complain-container {
+    padding: 10px;
+    margin: 15px;
+    display:block;
+    font-size:medium;
+    font-family: Arial, Helvetica, sans-serif;
+    height:auto;
+    justify-content: left;
+
+}
+
+#investigation-container {
+    padding: 10px;
+    margin: 15px;
+    display:table-caption;
+    font-size:medium;
+    font-family: Arial, Helvetica, sans-serif;
+    height:auto;
+    justify-content: center;
+}
+
+#investigation-container div {
+margin: 10px;
+}
+
+
+
+
+

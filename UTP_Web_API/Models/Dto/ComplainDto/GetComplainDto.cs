@@ -7,17 +7,17 @@ namespace UTP_Web_API.Models.Dto.ComplainDto
         public GetComplainDto()
         {        
         }
-
-        public string Pareiškėjas { get; set; }
-        public long TelefonoNumeris { get; set; }
-        public string SituacijosAprasymas { get; set; }
-        public string DuomenysApieSkundziamaImone { get; set; }
-        public ICollection<GetInvestigationStagesDto>? Etapas { get; set; }
-        public DateTime SkundasPaduodas { get; set; }
-        public DateTime? SkundrasIsnagrinetas { get; set; }
-        public string? Isvada { get; set; }
-        public string Tyrejas { get; set; }
-        public long? TyrejoTelefonoNumeris { get; set; }
+        public int ComplainId { get; set; }
+        public string Complainant { get; set; }
+        public long ComplainantPhoneNumer { get; set; }
+        public string ComplaintDescription { get; set; }
+        public string CompanyDetails { get; set; }
+        public ICollection<GetInvestigationStagesDto>? ComplainStage { get; set; }
+        public string ComplainStartDate { get; set; }
+        public string? ComplainEndDate { get; set; }
+        public string? Conclusion { get; set; }
+        public string Investigator { get; set; }
+        public long? InvestigatorPhoneNumber { get; set; }
       
 
     }

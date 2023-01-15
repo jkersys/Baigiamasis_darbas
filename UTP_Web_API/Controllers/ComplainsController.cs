@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using UTP_Web_API.Models;
 using UTP_Web_API.Models.Dto.ComplainDto;
 using UTP_Web_API.Repository.IRepository;
@@ -52,18 +53,21 @@ namespace UTP_Web_API.Controllers
         {
             try
             {
-                _logger.LogInformation($"{DateTime.Now} attempt to get complain id {id} ");
+                var currentUserId = int.Parse(_httpContextAccessor.HttpContext.User.Identity.Name);
+                _logger.LogInformation($"{DateTime.Now} User{currentUserId} attempt to get complain id {id} ");
+
                 if (id == 0)
             {
-                    _logger.LogInformation($"{DateTime.Now}input {id} not exist ");
+                    _logger.LogInformation($"{DateTime.Now} input {id} not valid ");
                     return BadRequest();
             }
-            if (await _complainRepo.ExistAsync(x => x.ComplainId == id) == false)
+            var complain = await _complainRepo.GetById(id);
+
+                if (complain == null)
             {
-                    _logger.LogInformation($"{DateTime.Now} complain Nr. {id} not exist ");
+                    _logger.LogInformation($"{DateTime.Now} complain Nr. {id} not exist or user does not have rights to open {JsonConvert.SerializeObject(complain)}");
                     return NotFound();
             }
-            var complain = await _complainRepo.GetById(id);
             var complainDto = _complainAdapter.Bind(complain);
 
             return Ok(complainDto);            
@@ -76,7 +80,7 @@ namespace UTP_Web_API.Controllers
         }
 
         /// <summary>
-        /// Grazina visus tyrimus, atvaizduojant tik dali duomenu
+        /// Grazina visus skundus ir atvaizduoja tik dali duomenu
         /// </summary>
         /// <param></param>
         /// <returns></returns>
@@ -89,15 +93,17 @@ namespace UTP_Web_API.Controllers
         {
             try
             {
-                _logger.LogInformation($"{DateTime.Now} attempt to get all complains");
+                var currentUserId = int.Parse(_httpContextAccessor.HttpContext.User.Identity.Name);
+                _logger.LogInformation($"{DateTime.Now} attempt to get all complains by user id {currentUserId}");
                 var complains = await _complainRepo.All();
+                var filtredComplains = complains.Where(x => x.LocalUser.Id == currentUserId);
 
-            if (complains == null)
+            if (filtredComplains == null)
             {
                     _logger.LogInformation($"{DateTime.Now} complains not found");
                     return NotFound();
             }
-            return Ok(complains
+            return Ok(filtredComplains
             .Select(c => _complainAdapter.Bind(c))
             .ToList());
             }
@@ -109,15 +115,15 @@ namespace UTP_Web_API.Controllers
         }
 
         /// <summary>
-        /// Sukuriamas naujas tyrimas
+        /// Sukuriamas naujas skundas
         /// </summary>
-        /// <param name="CreateComplainDto"></param>
+        /// <param name="complain"></param>
         /// <returns></returns>
         /// <response code="201">Created</response>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>
-        [HttpPost("complain")]
-        // [Authorize(Roles = "admin")]
+        [HttpPost("create/complain")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GetComplainDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -155,7 +161,7 @@ namespace UTP_Web_API.Controllers
 
         //[HttpPut("complains/{id:int}/conclusion/update/{id:int}")]
         /// <summary>
-        /// Pridedamas tyrejas prie complain
+        /// Pridedamas tyrejas prie skundo
         /// </summary>
         /// <param name="id"></param>
         /// <param name="updateComplainDto"></param>
@@ -186,13 +192,13 @@ namespace UTP_Web_API.Controllers
                     return NotFound();
             }
             var foundComplain = await _complainRepo.GetAsync(c => c.ComplainId == id);
-            var foundInvestigator = await _investigatorRepo.GetAsync(i => i.InvestigatorId == updateComplainDto.TyrejoId);
+            var foundInvestigator = await _investigatorRepo.GetAsync(i => i.InvestigatorId == updateComplainDto.InvestigatorId);
                 if(foundInvestigator == null)
                 {
-                    _logger.LogInformation($"{DateTime.Now} investigator {updateComplainDto.TyrejoId} not exist");
+                    _logger.LogInformation($"{DateTime.Now} investigator {updateComplainDto.InvestigatorId} not exist");
                     return NotFound();
                 }
-                var stage = new InvestigationStage { Stage = updateComplainDto.AtliekamiVeiksmai, 
+                var stage = new InvestigationStage { Stage = updateComplainDto.Stage, 
                 TimeStamp = DateTime.Now,
             };
 
@@ -211,7 +217,7 @@ namespace UTP_Web_API.Controllers
         }
 
         /// <summary>
-        /// Istrinamas complain is duomenu bazes
+        /// skundas istrinamas is duomenu bazes
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -247,7 +253,7 @@ namespace UTP_Web_API.Controllers
             await _complainRepo.RemoveAsync(complain);
 
             return NoContent();
-        }
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"{DateTime.Now} UpdateInvestigation exception error.");

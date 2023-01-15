@@ -161,5 +161,39 @@ namespace UTP_Web_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        /// <summary>
+        /// gaunamas tyreju sarasas, kuris naudojamas front ende selectui
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="500">Internal server error</response>
+        [HttpGet("investigators")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<InvestigatorResponse>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetInvestigators()
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} attempt to get investigators");
+                var investigators = await _investigatorRepo.All();
+
+                if (investigators == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} investigators not found");
+                    return NotFound();
+                }
+                return Ok(investigators
+                .Select(c => _iAdapter.BindForFrontEndResponse(c))
+                .ToList());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{DateTime.Now} GetInvestigators exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }

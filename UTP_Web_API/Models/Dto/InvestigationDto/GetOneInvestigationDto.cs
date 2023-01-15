@@ -6,6 +6,7 @@ namespace UTP_Web_API.Models.Dto.InvestigationDto
 {
     public class GetOneInvestigationDto
     {
+        public int InvestigationId { get; set; }
         public GetCompanyDto Company { get; set; }
         public ICollection<GetInvestigationStagesDto>? InvestigationStage { get; set; }
         public string InvestigationStarted { get; set; }

@@ -2,8 +2,8 @@
 {
     public class UpdateComplainDto
     {
-        public int TyrejoId { get; set; }
-        public string AtliekamiVeiksmai { get; set; }
+        public int InvestigatorId { get; set; }
+        public string Stage { get; set; }
         
     }
 }

@@ -25,7 +25,7 @@ namespace UTP_Web_API.Controllers
         /// <summary>
         /// Grazina visas galimas isvadas
         /// </summary>
-        /// <param name="id"></param>
+        /// <param></param>
         /// <returns></returns>
         /// <response code="200">OK</response>
         /// <response code="404">Not Found</response>
@@ -65,7 +65,7 @@ namespace UTP_Web_API.Controllers
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpGet("Conclusion/{id:int}", Name = "GetConclusion")]
+        [HttpGet("conclusion/{id:int}", Name = "GetConclusion")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetConclusionDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -119,7 +119,7 @@ namespace UTP_Web_API.Controllers
 
             try
             {
-                _logger.LogInformation($"{DateTime.Now} atempt to get conclusion {id}");
+                _logger.LogInformation($"{DateTime.Now} attempt to update conclusion {id}");
 
                 if (id == 0 || updateConclusionDto == null)
                 {
@@ -162,10 +162,12 @@ namespace UTP_Web_API.Controllers
         public async Task<ActionResult<string>> CreateConclusion(AddOrUpdateConclusionDto CreateConclusionDto)
         {
             try 
-            { 
-            if (CreateConclusionDto == null)
             {
-                return BadRequest();
+                _logger.LogError($"{DateTime.Now} attempt to create new conclusion.");
+                if (CreateConclusionDto == null)
+            {
+                    _logger.LogError($"{DateTime.Now} input {CreateConclusionDto} not valid");
+                    return BadRequest();
             }
 
             var createConclusion = new Conclusion() { Decision = CreateConclusionDto.Conclusion };
@@ -173,11 +175,11 @@ namespace UTP_Web_API.Controllers
 
             await _conclusionRepo.CreateAsync(createConclusion);
 
-            return CreatedAtRoute("GetInvestigation", new { id = createConclusion.ConclusionId }, _conclusionAdapter.Bind(createConclusion));
+            return CreatedAtRoute("GetConclusion", new { id = createConclusion.ConclusionId }, _conclusionAdapter.Bind(createConclusion));
         }
              catch (Exception ex)
             {
-                _logger.LogError(ex, $"{DateTime.Now} CreateInvestigator exception error.");
+                _logger.LogError(ex, $"{DateTime.Now} CreateConclusion exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -187,7 +189,7 @@ namespace UTP_Web_API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ///  <response code="204">OK</response>
+        ///  <response code="204">No Content</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
@@ -201,7 +203,7 @@ namespace UTP_Web_API.Controllers
         {
             try
             {
-                _logger.LogInformation($"{DateTime.Now} attempt to delete conclusion {id}.");
+                _logger.LogInformation($"{DateTime.Now} attempt to delete conclusion id {id}.");
                 if (id == 0)
             {
                 return BadRequest();

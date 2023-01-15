@@ -32,5 +32,14 @@ namespace UTP_Web_API.Services
                DarboVietosAdresas = investigator.WorkAdress,
             };
         }
+        public InvestigatorResponse BindForFrontEndResponse(Investigator investigator)
+        {
+            return new InvestigatorResponse()
+            {
+                id = investigator.InvestigatorId,
+                name = investigator.LocalUser.FirstName + " " + investigator.LocalUser.LastName
+
+            };
+        }
     }
 }

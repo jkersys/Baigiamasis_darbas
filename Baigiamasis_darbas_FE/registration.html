@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>BitFood Pagrindinis</title>
+</head>
+<body>
+    <main class="container main-class">
+        <header class="main-header">
+            <h1 class="header-h1">Unfair Trade Practise</h1>
+            <nav>
+                <a href="./index.html">Pradinis</a>
+                <a href="./registration.html" class="active">Registracija</a>
+                <a href="./login.html">Prisijungimas</a>
+                <a href="./menu.html">Menu</a>
+                <a href="./complains.html">Complains</a>
+                <a href="./investigations.html">Investigations</a>
+
+
+            </nav>
+        </header>
+        <article>
+            <h2>Vartotojų registracijos</h2>
+            <p class="error-message"></p>
+            <form id="registration-form">
+                <label for="email">Email</label>
+                <input type="text" name="email" id="email" placeholder="email"><br><br>
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" placeholder="Name"><br><br>
+                <label for="lastname">LastName</label>
+                <input type="text" name="lastname" id="lastname" placeholder="lastname"><br><br>
+                <label for="phonenumer">Phone numer</label>
+                <input type="number" name="phonenumer" id="phonenumer" placeholder="Phone number"><br><br>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" placeholder="Password"><br><br>
+                
+                <input type="button" id="registration-form-submit" value="Register">
+            </form>
+        </article>
+    </main>
+    <script src="js/app-registration.js"></script>
+</body>
+</html>

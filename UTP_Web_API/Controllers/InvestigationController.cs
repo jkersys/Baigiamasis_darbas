@@ -37,7 +37,7 @@ namespace UTP_Web_API.Controllers
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
         //[Authorize(Roles = "Customer")]
-        [HttpGet("investigation/{id:int}", Name = "GetInvestigation")]
+        [HttpGet(("{id}"), Name = "GetInvestigation")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetOneInvestigationDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,7 +75,7 @@ namespace UTP_Web_API.Controllers
         /// <summary>
         /// Grazina visus tyrimus, atvaizduojant tik dali duomenu
         /// </summary>
-        /// <param name="id">imone, tyrimo etapas, tyrimo pradzios laikas, pabaigos laikas, isvada, tyrejas, baudos dydis </param>
+        /// <param></param>
         /// <returns></returns>
         /// <response code="200">OK</response>
         /// <response code="400">Bad request</response>
@@ -171,7 +171,7 @@ namespace UTP_Web_API.Controllers
         /// <response code="201">Created</response>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>
-        [HttpPost("investigation")]
+        [HttpPost("create")]
         // [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GetInvestigationsDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

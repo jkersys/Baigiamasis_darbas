@@ -3,9 +3,8 @@
     public enum UserRole
     {
         Customer,
-        Complainer,
         Investigator,
-        DeparmentHead,
+        Director,
         Admin
     }
 }

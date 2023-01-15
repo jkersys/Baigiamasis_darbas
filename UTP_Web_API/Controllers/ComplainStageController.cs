@@ -23,7 +23,7 @@ namespace UTP_Web_API.Controllers
 
         //
         /// <summary>
-        /// i complain prideda nauja etapa
+        /// prie skundo pridedamas naujas etapas(istorija)
         /// </summary>
         /// <param name="id"></param>
         /// <param name="stage"></param>

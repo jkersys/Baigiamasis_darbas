@@ -14,7 +14,7 @@ namespace UTP_Web_API.Repository
         }
             public async Task<IEnumerable<Investigator>> All()
             {
-                var complains = _db.Investigator.Include(x => x.LocalUser).ToList();
+                var complains = await _db.Investigator.Include(x => x.LocalUser).ToListAsync();
                 return complains;
             }
 

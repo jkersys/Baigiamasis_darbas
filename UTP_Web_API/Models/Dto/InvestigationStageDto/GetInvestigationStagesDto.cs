@@ -4,11 +4,11 @@
     {
         public GetInvestigationStagesDto(InvestigationStage stage)
         {
-            Stage = stage.Stage;
-            TimeStamp = stage.TimeStamp.ToString("yyyy-MM-dd");
+            Stage = stage.Stage + " " +  stage.TimeStamp.ToString("yyyy-MM-dd");
+            //TimeStamp = stage.TimeStamp.ToString("yyyy-MM-dd");
         }
 
         public string Stage { get; set; }
-        public string TimeStamp { get; set; }
+       // public string TimeStamp { get; set; }
     }
 }

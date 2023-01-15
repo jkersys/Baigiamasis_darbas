@@ -23,16 +23,17 @@ namespace UTP_Web_API.Services
         {
             return new GetComplainDto
             {
-                Pareiškėjas = complain.LocalUser.FirstName + " " + complain.LocalUser.LastName,
-                TelefonoNumeris = complain.LocalUser.PhoneNumber,
-                SituacijosAprasymas = complain.Description,
-                DuomenysApieSkundziamaImone = complain.CompanyInformation,
-                SkundasPaduodas = complain.StartDate,
-                SkundrasIsnagrinetas = complain.EndDate,
-                Etapas = complain.Stages.Select(st => new GetInvestigationStagesDto(st)).ToList(),
-                Tyrejas = complain.Investigator?.LocalUser.FirstName + " " + complain.Investigator?.LocalUser.LastName,
-                TyrejoTelefonoNumeris = complain.Investigator?.LocalUser.PhoneNumber,
-                Isvada = complain.Conclusion?.Decision,
+                ComplainId = complain.ComplainId,
+                Complainant = complain.LocalUser.FirstName + " " + complain.LocalUser.LastName,
+                ComplainantPhoneNumer = complain.LocalUser.PhoneNumber,
+                ComplaintDescription = complain.Description,
+                CompanyDetails = complain.CompanyInformation,
+                ComplainStartDate = complain.StartDate.ToString("yyyy-MM-dd"),
+                ComplainEndDate = complain.EndDate?.ToString("yyyy-MM-dd"),
+                ComplainStage = complain.Stages.Select(st => new GetInvestigationStagesDto(st)).ToList(),
+                Investigator = complain.Investigator?.LocalUser.FirstName + " " + complain.Investigator?.LocalUser.LastName,
+                InvestigatorPhoneNumber = complain.Investigator?.LocalUser.PhoneNumber,
+                Conclusion = complain.Conclusion?.Decision,
                
             };
 
