@@ -29,27 +29,45 @@
             </section>
             <p class="error-message"></p>
             <div id ="investigation-container">
-                <div><p>Užpildykite skundo formą</p></div>
-                <form id="investigation-form">
-                    <div class="investigation-input-container">
-                    <div>   <label for="company">Select company</label>
-                   <select name="companyId" id="companyId" required></select></div>
-    
-                            <div class="label-container"><label for="name">Legal base</label>
-                           <input type="text" name="legalBase" id="legalBase" placeholder=""></div>
-    
-                        <div class="label-container"><label for="name">Stage</label>
-                      <input type="text" name="investigationStage" id="investigationStage" placeholder="" ></div>
-                        <div><label for="Investigators">Select investigator</label>
-                          <select name="investigatorId" id="investigatorId" required>
-                        </select></div>
-                        <div> <input type="button" id="investigation-form-submit" value="Submit"></div>
+                <div><p>Pridėti/pakeisti duomenis</p></div>
+            
 
-                     <br/><br/>
-                    
-                     
-                     </div>
-                    </form>
+                    <div id="todo-form">
+                        <div class="conclusion-container">
+                        </form>
+                        <form id="add-investigator-form">
+                        <label for="Investigators">Select company</label>
+                        <select name="companyId" id="companyId" required></div>
+                        </select>
+                        <div><input type="button" id="investigator-form-submit" value="Submit">
+                        </div>
+                       </form>
+                            </form>
+                            <form id="add-investigator-form">
+                            <label for="Investigators">Select investigator</label>
+                            <select name="investigatorId" id="investigatorId" required></div>
+                            </select>
+                            <div><input type="button" id="investigator-form-submit" value="Submit">
+                            </div>
+                           </form>
+                            </form>
+                             <form id="conclusion-form">
+                             <label for="Conclusion">Select conclusion</label>
+                             <select name="conclusionId" id="conclusionId" required></div>
+                             </select>
+                             <div><input type="button" id="conclusion-form-submit" value="Submit">
+                             </div>
+                        </form>
+                        <form id="stage-form">
+                            <div class="label-container"><label for="name">Stage</label></div>
+                            <input type="text" name="stage" id="stage" placeholder="" >
+                        <div><input type="button" id="stage-form-submit" value="Submit">
+                        </select>
+                        </div>
+                    </div>
+                       </form>
+
+
                     <div id="investigation">
                       
                     </div>

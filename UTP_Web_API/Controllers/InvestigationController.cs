@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using UTP_Web_API.Models;
 using UTP_Web_API.Models.Dto.ComplainDto;
 using UTP_Web_API.Models.Dto.InvestigationDto;
@@ -17,14 +18,17 @@ namespace UTP_Web_API.Controllers
         private readonly ICompanyRepository _companyRepo;
         private readonly IInvestigationAdapter _investigationAdapter;
         private readonly ILogger<InvestigationController> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public InvestigationController(IInvestigationRepository investigatonRepo, IInvestigatorRepository investigatorRepo, ICompanyRepository companyRepo, IInvestigationAdapter investigationAdapter, ILogger<InvestigationController> logger)
+
+        public InvestigationController(IInvestigationRepository investigatonRepo, IInvestigatorRepository investigatorRepo, ICompanyRepository companyRepo, IInvestigationAdapter investigationAdapter, ILogger<InvestigationController> logger, IHttpContextAccessor httpContextAccessor)
         {
             _investigatonRepo = investigatonRepo;
             _investigatorRepo = investigatorRepo;
             _companyRepo = companyRepo;
             _investigationAdapter = investigationAdapter;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -109,47 +113,53 @@ namespace UTP_Web_API.Controllers
         }
 
         /// <summary>
-        /// Atnaujina tyrimo duomenis, pakeicia imone, teisini pagrinda, prideda nauja tyreja ir bylos etapa
+        /// pridedamas i tyrima tyrejas
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="updateComplainDto"></param>
+        /// <param name="addInvestigatorDto"></param>
         /// <returns></returns>
         /// <response code="204">No Content</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpPut("investigation/update/{id:int}")]
+        [HttpPut("investigator/update/{id:int}")]
         // [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateInvestigation(int id, UpdateInvestigationDto updateComplainDto)
+        public async Task<ActionResult> AddInvestigatorToInvestigation(int id, AddInvestigatorDto addInvestigatorDto)
         {
             try 
-            { 
-            _logger.LogInformation($"{DateTime.Now} Atempt to update investigation");
-            if (id == 0 || updateComplainDto == null)
             {
-                    _logger.LogInformation($"{DateTime.Now} input {id} or {updateComplainDto} not valid");
+                _logger.LogInformation($"{DateTime.Now} Atempt to add ivestigator to investigation");
+
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+
+                if (currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no rights to add investigator to investigation");
+                    return BadRequest();
+                }
+            if (id == 0 || addInvestigatorDto == null)
+            {
+                    _logger.LogInformation($"{DateTime.Now} input {id} or {addInvestigatorDto.InvestigatorId} not valid");
                     return BadRequest();
             }
             if (await _investigatonRepo.ExistAsync(x => x.InvestigationId == id) == false)
             {
                     _logger.LogInformation($"{DateTime.Now} Investigation Nr. {id} not exist");
                     return NotFound();
-            }
-            var foundCompany = await _companyRepo.GetAsync(i => i.CompanyId == updateComplainDto.CompanyId);
+            }         
             var foundInvestigation = await _investigatonRepo.GetById(id);
-            var foundInvestigator = await _investigatorRepo.GetAsync(i => i.InvestigatorId == updateComplainDto.InvestigatorId);
-            var stage = new InvestigationStage
-            {
-                Stage = updateComplainDto.InvestigationStage,
-                TimeStamp = DateTime.Now,
-            };
-            foundInvestigation.Company = foundCompany;
+            var foundInvestigator = await _investigatorRepo.GetAsync(i => i.InvestigatorId == addInvestigatorDto.InvestigatorId);
+                if (foundInvestigator == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} Investigator Nr. {addInvestigatorDto.InvestigatorId} not exist");
+                    return NotFound();
+                }
+          
             foundInvestigation.Investigators?.Add(foundInvestigator);
-            foundInvestigation.Stages?.Add(stage);
 
             await _investigatonRepo.Update(foundInvestigation);
 
@@ -157,7 +167,7 @@ namespace UTP_Web_API.Controllers
         }
          catch (Exception ex)
             {
-                _logger.LogError(ex, $"{DateTime.Now} UpdateInvestigation exception error.");
+                _logger.LogError(ex, $"{DateTime.Now} AddInvestigatorToInvestigation exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
     }
 }

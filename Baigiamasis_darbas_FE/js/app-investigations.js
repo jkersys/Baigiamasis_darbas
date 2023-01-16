@@ -51,7 +51,7 @@ defaultOption.text = 'select';
 //dropdown.add(defaultOption);
 dropdown.selectedIndex = 0;
 function loadInvestigatorsData() {
-    const url = 'https://localhost:7220/api/Investigator/investigators';
+    const url = 'https://localhost:7220/api/Investigator/select';
 const options = {
     headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -68,7 +68,7 @@ const options = {
             let data          
             for (let i = 0; i < elements.length; i++) {
                 data = document.createElement('option');
-                data.text = elements[i].name;
+                data.text = elements[i].nameAndLastName;
                 data.value = elements[i].id;
                 dropdown.add(data);                   
 

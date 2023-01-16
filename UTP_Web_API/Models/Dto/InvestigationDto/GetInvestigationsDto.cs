@@ -8,8 +8,14 @@ namespace UTP_Web_API.Models.Dto.InvestigationDto
         public GetInvestigationsDto()
         {
         }
-        public int investigationId { get; set; }
+        public int InvestigationId { get; set; }
+        /// <summary>
+        /// Imones, kurios atzvilgiu vykdomas tyrimas
+        /// </summary>
         public string Company { get; set; }
+        /// <summary>
+        /// tyrimo etapu sarasas, su etapo data ir aprasymu
+        /// </summary>
         public ICollection<GetInvestigationStagesDto>? InvestigationStage { get; set; }
         public string InvestigationStarted { get; set; }
         public string? InvestigationEnded { get; set; }

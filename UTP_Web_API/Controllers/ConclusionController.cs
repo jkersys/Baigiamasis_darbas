@@ -23,6 +23,41 @@ namespace UTP_Web_API.Controllers
             _logger = logger;
         }
         /// <summary>
+        /// Grazinamos visos galimos isvados, kurios naudojamos front end dalyje selectoriuje
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
+        /// <response code="200">OK</response>
+        /// <response code="404">Not Found</response>
+        /// <response code="500">Internal server error</response>
+        [HttpGet("select")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ConclusonResponseForFrontEnd>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAllConclusionsForFrontEndSelector()
+        {
+            try
+            {
+                _logger.LogInformation($"{DateTime.Now} atempt to get all Conclusions for front end selector");
+                var conclusions = await _conclusionRepo.GetAllAsync();
+
+                if (conclusions == null)
+                {
+                    _logger.LogInformation($"{DateTime.Now} No conclusion found");
+                    return NotFound();
+                }
+                return Ok(conclusions
+                .Select(c => new ConclusonResponseForFrontEnd(c))
+                .ToList());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{DateTime.Now} GetAllConclusionsForFrontEndSelector exception error.");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        /// <summary>
         /// Grazina visas galimas isvadas
         /// </summary>
         /// <param></param>

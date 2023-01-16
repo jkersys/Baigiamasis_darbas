@@ -2,30 +2,33 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UTP_Web_API.Models.Dto.ConclusionDto;
+using UTP_Web_API.Repository;
 using UTP_Web_API.Repository.IRepository;
-using UTP_Web_API.Services.IServices;
 
 namespace UTP_Web_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ComplainConclusionController : ControllerBase
-    {   
+    public class InvestigationConclusionController : ControllerBase
+    {
         private readonly IConclusionRepository _conclusionRepo;
-        private readonly IComplainRepository _complainRepo;
-        private readonly ILogger<ComplainConclusionController> _logger;
+        private readonly IInvestigationRepository _investigationRepo;
+        private readonly ILogger<InvestigationConclusionController> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ComplainConclusionController(IComplainRepository complainRepo,
-               IConclusionRepository conclusionRepo, ILogger<ComplainConclusionController> logger, IHttpContextAccessor httpContextAccessor)
+        public InvestigationConclusionController(IInvestigationRepository investigationRepo,
+              IConclusionRepository conclusionRepo, ILogger<InvestigationConclusionController> logger, IHttpContextAccessor httpContextAccessor)
         {
-            _complainRepo = complainRepo;
+            _investigationRepo = investigationRepo;
             _conclusionRepo = conclusionRepo;
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
         }
+
+
+
         /// <summary>
-        /// Pridedama isvada prie complain
+        /// Pridedama isvada prie investigation
         /// </summary>
         /// <param name="complainId"></param>
         /// <param name="conclusion"></param>
@@ -44,40 +47,40 @@ namespace UTP_Web_API.Controllers
         {
             try
             {
-                    _logger.LogInformation($"{DateTime.Now} attempt to add conclusion to complain ");
+                _logger.LogInformation($"{DateTime.Now} attempt to add conclusion to investigation ");
                 var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
                 if (currentUserRole != "Investigator" && currentUserRole != "Admin" && currentUserRole != "Director")
                 {
-                    _logger.LogInformation($"{DateTime.Now} User have no rights to add conclusion to complain");
+                    _logger.LogInformation($"{DateTime.Now} User have no rights to add conclusion to investigation");
                     return BadRequest();
                 }
                 if (conclusion == null || complainId == 0)
-            {
+                {
                     _logger.LogInformation($"{DateTime.Now} input {complainId} Or {conclusion} not valid");
                     return BadRequest();
-            }
-           
-            var foundComplain = await _complainRepo.GetById(complainId);
-            var foundConclusion = await _conclusionRepo.GetAsync(i => i.ConclusionId == conclusion.ConclusionId);
+                }
 
-            if (foundComplain == null || foundConclusion == null)
-            {
+                var foundComplain = await _investigationRepo.GetById(complainId);
+                var foundConclusion = await _conclusionRepo.GetAsync(i => i.ConclusionId == conclusion.ConclusionId);
+
+                if (foundComplain == null || foundConclusion == null)
+                {
                     _logger.LogInformation($"{DateTime.Now} complain Nr. {complainId} or conclusion {conclusion.ConclusionId} not found");
                     return NotFound();
-            }
+                }
 
-            if (foundComplain.Conclusion != null && currentUserRole != "Admin" )
-            {
+                if (foundComplain.Conclusion != null && currentUserRole != "Admin")
+                {
                     _logger.LogInformation($"{DateTime.Now} complain already have conclusion");
                     return BadRequest("Byla jau užbaigta");
-            }
+                }
 
-            foundComplain.Conclusion = foundConclusion;           
-            foundComplain.EndDate = DateTime.Now;
-           
-            await _complainRepo.Update(foundComplain);
+                foundComplain.Conclusion = foundConclusion;
+                foundComplain.EndDate = DateTime.Now;
 
-            return NoContent();
+                await _investigationRepo.Update(foundComplain);
+
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -88,3 +91,6 @@ namespace UTP_Web_API.Controllers
 
     }
 }
+
+    
+

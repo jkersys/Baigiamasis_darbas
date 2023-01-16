@@ -2,6 +2,9 @@
 {
     public class GetConclusionDto
     {
-        public string? Isvada { get; set; }
+        /// <summary>
+        /// Grazinamas tik isvados tekstas
+        /// </summary>
+        public string? Conclusion { get; set; }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using UTP_Web_API.Models;
-using UTP_Web_API.Models.Dto.ComplainDto;
 using UTP_Web_API.Models.Dto.InvestigationStageDto;
 using UTP_Web_API.Repository.IRepository;
-using UTP_Web_API.Services.IServices;
 
 namespace UTP_Web_API.Controllers
 {
@@ -14,11 +13,13 @@ namespace UTP_Web_API.Controllers
     {
         private readonly IComplainRepository _complainRepo;
         private readonly ILogger<ComplainStageController> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ComplainStageController(IComplainRepository complainRepo, ILogger<ComplainStageController> logger)
+        public ComplainStageController(IComplainRepository complainRepo, ILogger<ComplainStageController> logger, IHttpContextAccessor httpContextAccessor)
         {
-            _complainRepo = complainRepo;          
+            _complainRepo = complainRepo;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         //
@@ -40,9 +41,16 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> AddStagesToComplain(int id, AddNewStage stage)
         {
+
             try
-            {
-                _logger.LogInformation($"{DateTime.Now} atempt to add conclusions");
+            {             
+                _logger.LogInformation($"{DateTime.Now} atempt to add stage to complain");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Investigator" && currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no rights to add investigator to complain");
+                    return BadRequest();
+                }
                 if (stage == null)
             {
                     _logger.LogInformation($"{DateTime.Now} input {stage} not valid");

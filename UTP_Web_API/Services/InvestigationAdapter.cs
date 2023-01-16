@@ -21,7 +21,7 @@ namespace UTP_Web_API.Services
         {
             return new GetInvestigationsDto()
             {
-                investigationId = investigation.CompanyId,
+                InvestigationId = investigation.CompanyId,
                 Company = investigation.Company.CompanyName,
                 InvestigationStage = investigation.Stages.Select(st => new GetInvestigationStagesDto(st)).ToList(),
                 InvestigationStarted = investigation.StartDate.ToString("yyyy-MM-dd"),

@@ -19,8 +19,6 @@
                 <a href="./menu.html" class="active">Menu</a>
                 <a href="./complains.html">Complains</a>
                 <a href="./investigations.html">Investigations</a>
-
-
             </nav>
         </header>
         <article>
@@ -29,18 +27,39 @@
                 <h2>Sveiki, atvykę į BitFood</h2>
             </section>
             <hr>
-            <form id="todo-form">
-                <div class="complain-input-container">
-                    <div class="label-container"><label for="name">Stage</label></div>
-                     <input type="text" name="stage" id="stage" placeholder="" >
-                 <label for="Investigators">Select investigator</label>
-                 <select name="investigatorId" id="InvestigatorId" required>
-                 </select>
-                 <br/><br/>
-                
-                 
-                 </div>
+            <div id="todo-form">
+            <div class="conclusion-container">
                 </form>
+                <div id="conclusion-container">
+                <form id="add-investigator-form">
+                <label for="Investigators">Select investigator</label>
+                <select name="investigatorId" id="investigatorId" required></div>
+                </select>
+                <div><input type="button" id="investigator-form-submit" value="Submit">
+                </div>
+                </div>
+               </form>
+                </form>
+                 <div id="conclusion-container">
+                 <form id="conclusion-form">
+                 <label for="Conclusion">Select conclusion</label>
+                 <select name="conclusionId" id="conclusionId" required></div>
+                 </select>
+                 <div><input type="button" id="conclusion-form-submit" value="Submit">
+                 </div>
+                 </div>
+            </form>
+            <div id="conclusion-container">
+            <form id="stage-form">
+                <div class="label-container"><label for="name">Stage</label></div>
+                <input type="text" name="stage" id="stage" placeholder="" >
+            <div><input type="button" id="stage-form-submit" value="Submit">
+            </select>
+            </div>
+            </div>
+        </div>
+           </form>
+        </div>
             <div id="complain">
               
             </div>

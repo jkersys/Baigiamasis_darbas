@@ -20,8 +20,24 @@ namespace UTP_Web_API.Repository
 
         public async Task<IEnumerable<Complain>> All()
         {
-            var complains = await _db.Complain.Include(x => x.Investigator.LocalUser).Include(x => x.LocalUser).Include(x => x.Conclusion).Include(x => x.Stages).ToListAsync();
-            return complains;
+            var currentUserId = int.Parse(_httpContextAccessor.HttpContext.User.Identity.Name);
+            var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+            if (currentUserRole == "Admin" || currentUserRole == "Director")
+            {
+                var complains = await _db.Complain.Include(x => x.Investigator.LocalUser).Include(x => x.LocalUser).Include(x => x.Conclusion).Include(x => x.Stages).ToListAsync();
+                return complains;
+            }
+            if (currentUserRole == "Investigator")
+            {
+                var complains = await _db.Complain.Include(x => x.Investigator.LocalUser).Include(x => x.LocalUser).Include(x => x.Conclusion).Include(x => x.Stages).Where(x => x.Investigator.LocalUserId == currentUserId).ToListAsync();
+                return complains;
+            }
+            if (currentUserRole == "Customer")
+            {
+                var complains = await _db.Complain.Include(x => x.Investigator.LocalUser).Include(x => x.LocalUser).Include(x => x.Conclusion).Include(x => x.Stages).Where(x => x.LocalUser.Id == currentUserId).ToListAsync();
+                return complains;
+            }
+            else return null;
         }
 
         public async Task<Complain> GetById(int id)

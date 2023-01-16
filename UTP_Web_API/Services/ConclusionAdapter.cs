@@ -10,7 +10,7 @@ namespace UTP_Web_API.Services
         {
             return new GetConclusionDto()
             {
-                Isvada = conclusion?.Decision
+                Conclusion = conclusion?.Decision
             };
         }
         

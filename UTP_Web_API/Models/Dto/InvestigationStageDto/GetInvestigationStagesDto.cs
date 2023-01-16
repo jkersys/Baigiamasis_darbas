@@ -4,11 +4,12 @@
     {
         public GetInvestigationStagesDto(InvestigationStage stage)
         {
-            Stage = stage.Stage + " " +  stage.TimeStamp.ToString("yyyy-MM-dd");
-            //TimeStamp = stage.TimeStamp.ToString("yyyy-MM-dd");
+            Stage = stage.TimeStamp.ToString("yyyy-MM-dd") + ": " + stage.Stage;
         }
-
+        /// <summary>
+        /// grazinamas atiduodant tyrimo etapus i constuktoriu paduodant tyrimo etapu sarasa ir grazinant sumapinta 
+        /// etapo data ir etapo aprasyma
+        /// </summary>
         public string Stage { get; set; }
-       // public string TimeStamp { get; set; }
     }
 }

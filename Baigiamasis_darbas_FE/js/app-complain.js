@@ -1,16 +1,26 @@
-const btnToggleTodo = document.querySelector('#addTodo')
-let inputForm = document.querySelector('#todo-form')
+const conclusionFormSbmBtn = document.querySelector('#conclusion-form-submit');
+const conclusionForm = document.querySelector('#conclusion-form');
+const addInvestigatorForm = document.querySelector('#add-investigator-form');
+const investigatorFormSbmBtn = document.querySelector('#investigator-form-submit');
+const addStageForm = document.querySelector('#stage-form');
+const stageFormSbmBtn = document.querySelector('#stage-form-submit');
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+getComplain(urlParams.get('id'));
+const complainsId = (urlParams.get('id'));
+
+
 
 //get all investigators
-let dropdown = document.querySelector('#InvestigatorId');
+let dropdown = document.querySelector('#investigatorId');
 //dropdown.length = 0;
 let defaultOption = document.createElement('option');
 defaultOption.text = 'select';
-dropdown.add(defaultOption);
+//dropdown.add(defaultOption);
 dropdown.selectedIndex = 0;
 
 function loadInvestigatorsData() {
-    const url = 'https://localhost:7220/api/Investigator/investigators';
+    const url = 'https://localhost:7220/api/Investigator/select';
 const options = {
     headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -27,7 +37,7 @@ const options = {
             let data          
             for (let i = 0; i < elements.length; i++) {
                 data = document.createElement('option');
-                data.text = elements[i].name;
+                data.text = elements[i].nameAndLastName;
                 data.value = elements[i].id;
                 dropdown.add(data);                   
 
@@ -36,6 +46,40 @@ const options = {
         });   
 }
 
+//get all conclusions
+let dropdownConclusion = document.querySelector('#conclusionId');
+//dropdown.length = 0;
+let defaultOptionConclusion = document.createElement('option');
+defaultOptionConclusion.text = 'select';
+//dropdown.add(defaultOption);
+dropdownConclusion.selectedIndex = 0;
+
+function loadConclusionData() {
+    const url = 'https://localhost:7220/api/Conclusion/select';
+const options = {
+    headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + window.localStorage.getItem('token')
+    },
+    method: 'get',    
+}
+    fetch(url, options)
+    .then((response) => response.json())
+    .then((complains) => {
+        const elements = complains;
+        console.log(elements);                           
+            let data          
+            for (let i = 0; i < elements.length; i++) {
+                data = document.createElement('option');
+                data.text = elements[i].conclusion;
+                data.value = elements[i].id;
+                dropdownConclusion.add(data);                   
+
+        }
+                        
+        });   
+}
 function getComplain(complainId) {
     const url = 'https://localhost:7220/api/Complains/complains/' + complainId;
 const options = {
@@ -87,13 +131,6 @@ const options = {
         }                      
         );    
 }
-
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-getComplain(urlParams.get('id'));
-
-
-
 function renderStages(stages) {
     let result = "";
     stages?.forEach((value) => {
@@ -120,21 +157,54 @@ const deleteComplain = (id) => {
 }
 
 let toggleTodo = () => {    
-    if (inputForm.style.display === 'none' || inputForm.style.display === '') {
-        inputForm.style.display = 'grid';
+    if (addInvestigatorForm.style.display === 'none' || addInvestigatorForm.style.display === '') {
+        addInvestigatorForm.style.display = 'grid';
     } else {
-        inputForm.style.display = 'none';
+        addInvestigatorForm.style.display = 'none';
     }
 }
 
+function addConclusion(complainsId) {
+
+    let data = new FormData(conclusionForm);
+    let obj = {};
+
+    // #1 iteracija -> obj {name: 'asd'}
+    // #2 iteracija -> obj {type: 'asd'}
+    data.forEach((value, key) => {
+        // console.log(`${key}(Key): ${value}(Value)`);
+        obj[key] = value
+    });
+
+    const url = 'https://localhost:7220/api/ComplainConclusion/complains/' +complainsId+ '/conclusions';
+
+    fetch(url, {
+        method: 'put',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + window.localStorage.getItem('token')
+        },
+        // Naudojame JSON.stringify, nes objekte neturim .json() metodo
+        body: JSON.stringify(obj) 
+    })
+    .then(obj => {
+        const res = obj.json()
+        console.log(res);
+        return res;
+    })
+    .catch((klaida) => console.log(klaida));
+}
+
+conclusionFormSbmBtn.addEventListener('click', (e) => {
+   // e.preventDefault(); // Breaks manual refresh after submit
+   addConclusion(urlParams.get('id'));
+})
 
 
+function addInvestigator(id) {
 
-
-
-function updateComplain(id) {
-
-        let data = new FormData(inputForm);
+        let data = new FormData(addInvestigatorForm);
         let obj = {};
     
         // #1 iteracija -> obj {name: 'asd'}
@@ -144,13 +214,14 @@ function updateComplain(id) {
             obj[key] = value
         });
     
-        const url = 'https://localhost:7220/api/Complains/complains/update/' + id;
+        const url = 'https://localhost:7220/api/Complains/complains/investigator/update/' + id;
     
         fetch(url, {
             method: 'put',
             headers: {
                 'Accept': 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + window.localStorage.getItem('token')
             },
             // Naudojame JSON.stringify, nes objekte neturim .json() metodo
             body: JSON.stringify(obj) 
@@ -162,10 +233,47 @@ function updateComplain(id) {
         })
         .catch((klaida) => console.log(klaida));
    }
+   investigatorFormSbmBtn.addEventListener('click', (e) => {
+    // e.preventDefault(); // Breaks manual refresh after submit
+    addInvestigator(urlParams.get('id'));
+ })
 
+ function addStage(id) {
+
+    let data = new FormData(addStageForm);
+    let obj = {};
+
+    // #1 iteracija -> obj {name: 'asd'}
+    // #2 iteracija -> obj {type: 'asd'}
+    data.forEach((value, key) => {
+        // console.log(`${key}(Key): ${value}(Value)`);
+        obj[key] = value
+    });
+
+    const url = 'https://localhost:7220/api/ComplainStage/investigator/complains/stage/update/' + id;
+
+    fetch(url, {
+        method: 'put',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + window.localStorage.getItem('token')
+        },
+        // Naudojame JSON.stringify, nes objekte neturim .json() metodo
+        body: JSON.stringify(obj) 
+    })
+    .then(obj => {
+        const res = obj.json()
+        console.log(res);
+        return res;
+    })
+    .catch((klaida) => console.log(klaida));
+}
+stageFormSbmBtn.addEventListener('click', (e) => {
+// e.preventDefault(); // Breaks manual refresh after submit
+addStage(urlParams.get('id'));
+})
   
 
-   const editTodo = (id) => {
- //   e.preventDefault(); // Breaks manual refresh after submit
-    updateComplain(id);}
 loadInvestigatorsData()
+loadConclusionData()

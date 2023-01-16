@@ -4,13 +4,25 @@ namespace UTP_Web_API.Models.Dto.InvestigatorDto
 {
     public class CreateInvestigatorDto
     {
+        /// <summary>
+        /// Tyrejo pazymejimo numeris
+        /// </summary>
         [Required]
-        public string PazymejimoNumeris { get; set; }
+        public string CertificateNumber { get; set; }
+        /// <summary>
+        /// Kabineto numeris
+        /// </summary>
         [Required]
-        public string KabinetoNumeris { get; set; }
+        public string CabinetNumber { get; set; }
+        /// <summary>
+        /// Darbo vietos adresas
+        /// </summary>
         [Required]
-        public string DarboAdresas { get; set; }
+        public string WorkplaceAdress { get; set; }
+        /// <summary>
+        /// Jau sistemoje egzistuojanio vartotojo el pastas, su kuriuo yra sujungiami tyrejo duomenys
+        /// </summary>
         [Required]
-        public string VartotojoElPastas { get; set; }
+        public string LocalUserEmail { get; set; }
     }
 }

@@ -50,15 +50,15 @@ namespace UTP_Web_API.Controllers
                 {
                     return BadRequest();
                 }
-                var user = await _userRepo.GetUser(investigator.VartotojoElPastas);
+                var user = await _userRepo.GetUser(investigator.LocalUserEmail);
                 if (user == null)
                 {
-                    _logger.LogInformation($"{DateTime.Now} User with {investigator.VartotojoElPastas} email was not found");
-                    return NotFound($"User email {investigator.VartotojoElPastas} not found");
+                    _logger.LogInformation($"{DateTime.Now} User with {investigator.LocalUserEmail} email was not found");
+                    return NotFound($"User email {investigator.LocalUserEmail} not found");
                 }
                 if (user.Investigator != null)
                 {
-                    _logger.LogInformation($"{DateTime.Now} Investigator with {investigator.VartotojoElPastas} already exist");
+                    _logger.LogInformation($"{DateTime.Now} Investigator with {investigator.LocalUserEmail} already exist");
                     return BadRequest("Tyrejas tokiu vardu jau yra");
                 }
                 var createInvestigator = _iAdapter.Bind(investigator, user);
@@ -169,11 +169,11 @@ namespace UTP_Web_API.Controllers
         /// <response code="200">OK</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpGet("investigators")]
+        [HttpGet("select")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<InvestigatorResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetInvestigators()
+        public async Task<IActionResult> GetInvestigatorsForFrontEndSelect()
         {
             try
             {

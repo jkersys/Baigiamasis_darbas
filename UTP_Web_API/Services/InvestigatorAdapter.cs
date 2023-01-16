@@ -12,9 +12,9 @@ namespace UTP_Web_API.Services
             {
                 
                 LocalUser = user,                
-                CertificationId = createInvestigator.PazymejimoNumeris,
-                CabinetNumber = createInvestigator.KabinetoNumeris,
-                WorkAdress = createInvestigator.DarboAdresas
+                CertificationId = createInvestigator.CertificateNumber,
+                CabinetNumber = createInvestigator.CabinetNumber,
+                WorkAdress = createInvestigator.WorkplaceAdress
                 
             };
         }
@@ -23,13 +23,13 @@ namespace UTP_Web_API.Services
         {
             return new GetInvestigatorDto()
             {
-               Vardas = investigator.LocalUser.FirstName,
-               Pavarde = investigator.LocalUser.LastName,
-               TelefonoNumeris = investigator.LocalUser.PhoneNumber,
-               ElPastas = investigator.LocalUser.Email,
-               PazymejimoNumeris = investigator.CertificationId,
-               KabinetoNumeris = investigator.CabinetNumber,
-               DarboVietosAdresas = investigator.WorkAdress,
+               Name = investigator.LocalUser.FirstName,
+               Lastname = investigator.LocalUser.LastName,
+               PhoneNumber = investigator.LocalUser.PhoneNumber,
+               Email = investigator.LocalUser.Email,
+               CertificateNumber = investigator.CertificationId,
+               CabinetNumber = investigator.CabinetNumber,
+               WorkplaceAdress = investigator.WorkAdress,
             };
         }
         public InvestigatorResponse BindForFrontEndResponse(Investigator investigator)
@@ -37,7 +37,7 @@ namespace UTP_Web_API.Services
             return new InvestigatorResponse()
             {
                 id = investigator.InvestigatorId,
-                name = investigator.LocalUser.FirstName + " " + investigator.LocalUser.LastName
+                NameAndLastName = investigator.LocalUser.FirstName + " " + investigator.LocalUser.LastName
 
             };
         }

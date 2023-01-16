@@ -8,22 +8,22 @@
 
         public GetInvestigatorDto(Investigator investigator)
         {
-            Vardas = investigator.LocalUser?.FirstName;
-            Pavarde = investigator.LocalUser?.LastName;
-            TelefonoNumeris = (investigator.LocalUser?.PhoneNumber);
-            ElPastas = investigator.LocalUser?.Email;
-            PazymejimoNumeris = investigator?.CertificationId;
-            KabinetoNumeris = investigator?.CabinetNumber;
-            DarboVietosAdresas = investigator?.WorkAdress;
+            Name = investigator.LocalUser?.FirstName;
+            Lastname = investigator.LocalUser?.LastName;
+            PhoneNumber = (investigator.LocalUser?.PhoneNumber);
+            Email = investigator.LocalUser?.Email;
+            CertificateNumber = investigator?.CertificationId;
+            CabinetNumber = investigator?.CabinetNumber;
+            WorkplaceAdress = investigator?.WorkAdress;
         }
 
-        public string Vardas { get; set; }
-        public string Pavarde { get; set; }
-        public long? TelefonoNumeris { get; set; }
-        public string ElPastas { get; set; }
-        public string PazymejimoNumeris { get; set; }
-        public string KabinetoNumeris { get; set; }
-        public string DarboVietosAdresas { get; set; }
+        public string Name { get; set; }
+        public string Lastname { get; set; }
+        public long? PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public string CertificateNumber { get; set; }
+        public string CabinetNumber { get; set; }
+        public string WorkplaceAdress { get; set; }
 
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 using UTP_Web_API.Models;
 using UTP_Web_API.Models.Dto.ComplainDto;
 using UTP_Web_API.Repository.IRepository;
@@ -93,17 +94,16 @@ namespace UTP_Web_API.Controllers
         {
             try
             {
-                var currentUserId = int.Parse(_httpContextAccessor.HttpContext.User.Identity.Name);
-                _logger.LogInformation($"{DateTime.Now} attempt to get all complains by user id {currentUserId}");
-                var complains = await _complainRepo.All();
-                var filtredComplains = complains.Where(x => x.LocalUser.Id == currentUserId);
 
-            if (filtredComplains == null)
+                _logger.LogInformation($"{DateTime.Now} attempt to get all complains");
+                var complains = await _complainRepo.All();
+
+            if (complains == null)
             {
                     _logger.LogInformation($"{DateTime.Now} complains not found");
                     return NotFound();
             }
-            return Ok(filtredComplains
+            return Ok(complains
             .Select(c => _complainAdapter.Bind(c))
             .ToList());
             }
@@ -164,26 +164,32 @@ namespace UTP_Web_API.Controllers
         /// Pridedamas tyrejas prie skundo
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="updateComplainDto"></param>
+        /// <param name="addInvestigatorToCoplainDto"></param>
         /// <returns></returns>
         /// <response code="204">No Content</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpPut("complains/update/{id:int}")]
-        // [Authorize(Roles = "admin")]
+        [HttpPut("complains/investigator/update/{id:int}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddInvestigatorToComplain(int id, UpdateComplainDto updateComplainDto)
+        public async Task<ActionResult> AddInvestigatorToComplain(int id, AddInvestigatorToComplainDto addInvestigatorToCoplainDto)
         {
             try
             {
-                _logger.LogInformation($"{DateTime.Now} Attempt to add investigator to complain");
-                if (id == 0 || updateComplainDto == null)
+                _logger.LogInformation($"{DateTime.Now} Attempt to add investigator to complain ");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no rights to add investigator to complain");
+                    return BadRequest();
+                }
+                if (id == 0 || addInvestigatorToCoplainDto == null)
             {
-                    _logger.LogInformation($"{DateTime.Now} input {id} or {updateComplainDto} not valid");
+                    _logger.LogInformation($"{DateTime.Now} input {id} or {addInvestigatorToCoplainDto.InvestigatorId} not valid");
                     return BadRequest();
             }
             if (await _complainRepo.ExistAsync(x => x.ComplainId == id) == false)
@@ -192,18 +198,14 @@ namespace UTP_Web_API.Controllers
                     return NotFound();
             }
             var foundComplain = await _complainRepo.GetAsync(c => c.ComplainId == id);
-            var foundInvestigator = await _investigatorRepo.GetAsync(i => i.InvestigatorId == updateComplainDto.InvestigatorId);
+            var foundInvestigator = await _investigatorRepo.GetAsync(i => i.InvestigatorId == addInvestigatorToCoplainDto.InvestigatorId);
                 if(foundInvestigator == null)
                 {
-                    _logger.LogInformation($"{DateTime.Now} investigator {updateComplainDto.InvestigatorId} not exist");
+                    _logger.LogInformation($"{DateTime.Now} investigator {addInvestigatorToCoplainDto.InvestigatorId} not exist");
                     return NotFound();
-                }
-                var stage = new InvestigationStage { Stage = updateComplainDto.Stage, 
-                TimeStamp = DateTime.Now,
-            };
+                }          
 
             foundComplain.Investigator = foundInvestigator;
-            foundComplain.Stages.Add(stage);
 
             await _complainRepo.Update(foundComplain);
 

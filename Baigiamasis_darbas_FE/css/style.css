@@ -315,14 +315,22 @@ input[type="button"] {
     border: 1px solid rgb(136, 135, 135);
     width: 1400px;
     display: grid;
-    grid-template-columns: 150px  150px 150px 150px 150px 150px 150px 150px     ;
+    grid-template-columns: 200px  150px 150px 150px 150px 150px 150px 150px     ;
     gap: 10px;
     justify-content: center;
     font-size:medium;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-
+#conclusion-container {
+    padding: 10px;
+    margin: 15px;
+    display:block;
+    font-size:medium;
+    font-family: Arial, Helvetica, sans-serif;
+    height:80px;
+    justify-content: left;
+}
 
 .printedDataContainer div{
     text-align: center;
@@ -423,7 +431,9 @@ height:min-content;
 margin: 10px;
 }
 
-
+#todo-form{
+         
+}
 
 
 
