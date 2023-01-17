@@ -81,7 +81,7 @@ namespace UTP_Web_API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{DateTime.Now} GetComplainById exception error.");
+                _logger.LogError(ex, $"{DateTime.Now} AddConclusionToComplain exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

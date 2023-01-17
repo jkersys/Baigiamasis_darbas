@@ -1,7 +1,20 @@
+
+
 const complainForm = document.querySelector('#complain-form');
 const complainFormSbmBtn = document.querySelector('#complain-form-submit');
 const errorEle = document.querySelector(".error-message");
 
+//Tikrinam ar prisijungęs
+let isConected = () => {
+    KeyName = Object.getOwnPropertyNames(localStorage)
+    if (KeyName != "token") {
+        localStorage.clear();
+        window.location.href = '../index.html'
+    }
+}
+//nuskaitom raktą
+let KeyName = Object.getOwnPropertyNames(localStorage)
+setInterval(isConected, 1000)
 
 
 function sendData() {
@@ -42,7 +55,7 @@ function sendData() {
 
 function renderStages(stages) {
     let result = "";
-    stages?.forEach((value, key) => {
+    stages?.forEach((value) => {
         result += value.stage + ', ';
     });
 

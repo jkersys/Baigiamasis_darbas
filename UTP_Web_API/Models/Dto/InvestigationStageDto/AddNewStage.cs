@@ -5,6 +5,7 @@
         /// <summary>
         /// propertis, kuris naudojamas ivedant nauja eigos etapa
         /// </summary>
+        ///
         public string Stage { get; set; }
     }
 }

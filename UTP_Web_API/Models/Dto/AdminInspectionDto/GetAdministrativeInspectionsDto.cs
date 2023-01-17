@@ -5,6 +5,7 @@ namespace UTP_Web_API.Models.Dto.AdminInspection
 {
     public class GetAdministrativeInspectionsDto
     {
+        public int Id { get; set; }
         public string StartDate { get; set; }
         public string? EndDate { get; set; }
         public ICollection<GetInvestigationStagesDto> InvestigationStages { get; set; }

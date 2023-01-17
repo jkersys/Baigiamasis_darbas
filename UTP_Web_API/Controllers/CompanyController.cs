@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using UTP_Web_API.Models.Dto.CompanyDto;
 using UTP_Web_API.Repository.IRepository;
 using UTP_Web_API.Services.IServices;
@@ -13,11 +15,14 @@ namespace UTP_Web_API.Controllers
         private readonly ICompanyRepository _companyRepo;
         private readonly ICompanyAdapter _companyAdapter;
         private readonly ILogger<CompanyController> _logger;
-        public CompanyController(ICompanyRepository companyRepo, ICompanyAdapter companyAdapter, ILogger<CompanyController> logger)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public CompanyController(ICompanyRepository companyRepo, ICompanyAdapter companyAdapter, ILogger<CompanyController> logger, IHttpContextAccessor httpContextAccessor)
         {
             _companyRepo = companyRepo;
             _companyAdapter = companyAdapter;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -31,11 +36,18 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CompanyResponseForFrondEndDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
         public async Task<IActionResult> GetCompaniesForFe()
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} attempt to get companies");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director" && currentUserRole != "Investigator")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to load companies data");
+                    return BadRequest("You have no right to load companies data");
+                }
                 var companies = await _companyRepo.GetAllAsync();
 
                 if (companies == null)
@@ -64,18 +76,25 @@ namespace UTP_Web_API.Controllers
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpGet("company/{id:int}", Name = "GetCompany")]
+        [HttpGet("{id:int}", Name = "GetCompany")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCompanyDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces("application/json")]
         [Consumes("application/json")]
+        [Authorize]
         public async Task<ActionResult<GetCompanyDto>> GetCompanyById(int id)
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} attempt to get company with id {id} ");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director" && currentUserRole != "Investigator")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to load company {id} data");
+                    return BadRequest("You have no right to load company data");
+                }
                 if (id == 0)
                 {
                     _logger.LogInformation($"{DateTime.Now} input {id} not valid");
@@ -88,7 +107,7 @@ namespace UTP_Web_API.Controllers
                     _logger.LogInformation($"{DateTime.Now}company {id} not found");
                     return NotFound();
                 }
-
+              
                 var companyDto = _companyAdapter.Bind(company);
 
                 return Ok(companyDto);
@@ -110,11 +129,20 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetCompanyDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+
+        // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetCompanies()
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} attempt to get companies");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director" && currentUserRole != "Investigator")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to load companies data");
+                    return BadRequest("You have no right to load companies data");
+                }
                 var companies = await _companyRepo.GetAllAsync();
 
                 if (companies == null)
@@ -140,16 +168,24 @@ namespace UTP_Web_API.Controllers
         ///<response code="201">Created</response>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>
-        [HttpPost("company")]
+        [HttpPost("create")]
         // [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GetCompanyDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+
         public async Task<ActionResult<GetCompanyDto>> CreateCompany(CreateCompanyDto companyDto)
         {
             try
             {
                 _logger.LogError($"{DateTime.Now} attempt to create new company.");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director" && currentUserRole != "Investigator")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to create company");
+                    return BadRequest("You have no right to create company");
+                }
                 if (companyDto == null)
                 {
                     _logger.LogError($"{DateTime.Now} input {companyDto} not valid");
@@ -171,7 +207,7 @@ namespace UTP_Web_API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{DateTime.Now} CreateConclusion exception error.");
+                _logger.LogError(ex, $"{DateTime.Now} CreateCompany exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -181,17 +217,25 @@ namespace UTP_Web_API.Controllers
         /// <param name="id"></param>
         /// <param name="updateCompanyDto"></param>
         /// <returns></returns>
-        [HttpPut("companies/update/{id:int}")]
+        [HttpPut("update/{id:int}")]
         // [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+
         public async Task<ActionResult> UpdateCompany(int id, CreateCompanyDto updateCompanyDto)
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} attempt to update conclusion {id}");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director" && currentUserRole != "Investigator")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no rights to update company data");
+                    return BadRequest("You have no right to update company data");
+                }
                 if (id == 0 || updateCompanyDto == null)
                 {
                     _logger.LogInformation($"{DateTime.Now} input {id} or {updateCompanyDto} not valid");
@@ -232,31 +276,42 @@ namespace UTP_Web_API.Controllers
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpDelete("companies/delete/{id:int}")]
+        [HttpDelete("delete/{id:int}")]
         //[Authorize(Roles = "super-admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
         public async Task<ActionResult> DeleteCompany(int id)
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} attempt to delete company id {id}.");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director" && currentUserRole != "Investigator")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to delete companies data");
+                    return BadRequest("You have no right to delete companies data");
+                }
                 if (id == 0)
                 {
                     _logger.LogInformation($"{DateTime.Now} input {id} not valid.");
                     return BadRequest();
                 }
 
-                var company = await _companyRepo.GetAsync(d => d.CompanyId == id);
+                var company = await _companyRepo.GetCompanyById(id);
 
                 if (company == null)
                 {
                     _logger.LogInformation($"{DateTime.Now} company id Nr. {id} not found");
                     return NotFound();
                 }
-
+                if (company.Investigations.Count > 0 || company.AdministrativeInspections.Count > 0)
+                {
+                    _logger.LogInformation($"{DateTime.Now} Conclusion already aded to cases, and cant be deleted");
+                    return BadRequest("Conclusion already aded to cases");
+                }
                 await _companyRepo.RemoveAsync(company);
 
                 return NoContent();

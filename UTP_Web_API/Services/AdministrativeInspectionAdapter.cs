@@ -12,6 +12,7 @@ namespace UTP_Web_API.Services
         {
             return new GetAdministrativeInspectionsDto()
             {
+                Id = inspection.AdministrativeInspectionId,
                 StartDate = inspection.StartDate.ToString("yyyy-MM-dd"),
                 EndDate = inspection.EndDate?.ToString("yyyy-MM-dd"),
                 InvestigationStages = inspection.InvestigationStages.Select(i => new GetInvestigationStagesDto(i)).ToList(),

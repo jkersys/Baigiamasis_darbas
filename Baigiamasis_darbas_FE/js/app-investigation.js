@@ -1,3 +1,14 @@
+//Tikrinam ar prisijungęs
+let isConected = () => {
+    KeyName = Object.getOwnPropertyNames(localStorage)
+    if (KeyName != "token") {
+        localStorage.clear();
+        window.location.href = '../index.html'
+    }
+}
+//nuskaitom raktą
+let KeyName = Object.getOwnPropertyNames(localStorage)
+setInterval(isConected, 1000)
 const addInvestigatorForm = document.querySelector('#add-investigator-form');
 const investigatorFormSbmBtn = document.querySelector('#investigator-form-submit');
 const conclusionFormSbmBtn = document.querySelector('#conclusion-form-submit');
@@ -78,7 +89,7 @@ function renderInvestigators(investigator) {
          "El. Paštas:" + "&nbsp" + value.email + "<br/>" +
          "Kabineto Nr." + "&nbsp" + value.cabinetNumber + "<br/>" +
          "Adresas:" + "&nbsp" + value.workplaceAdress + "<br/>" +
-         "Pazymejimo Nr.:" + "&nbsp" + value.certificateNumber + "<br/>"
+         "Pazymejimo Nr.:" + "&nbsp" + value.certificateNumber + "<br/><br/>"
     });
     return result;
 }
@@ -117,39 +128,39 @@ const options = {
                         
         });   
 }
-//Load companies list
-let dropdownCompanies = document.querySelector('#companyId');
-//dropdown.length = 0;
-let defaultOptionCompanies = document.createElement('option');
-defaultOptionCompanies.text = 'select';
-//dropdownCompanies.add(defaultOption);
-dropdownCompanies.selectedIndex = 0;
-function loadCompaniesData() {
-    const url = 'https://localhost:7220/api/Company/companies/list';
-const options = {
-    headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + window.localStorage.getItem('token')
-    },
-    method: 'get',    
-}
-    fetch(url, options)
-    .then((response) => response.json())
-    .then((complains) => {
-        const elements = complains;
-        console.log(elements);                           
-            let data          
-            for (let i = 0; i < elements.length; i++) {
-                data = document.createElement('option');
-                data.text = elements[i].companyName;
-                data.value = elements[i].companyId;
-                dropdownCompanies.add(data);                   
+// //Load companies list
+// let dropdownCompanies = document.querySelector('#companyId');
+// //dropdown.length = 0;
+// let defaultOptionCompanies = document.createElement('option');
+// defaultOptionCompanies.text = 'select';
+// //dropdownCompanies.add(defaultOption);
+// dropdownCompanies.selectedIndex = 0;
+// function loadCompaniesData() {
+//     const url = 'https://localhost:7220/api/Company/companies/list';
+// const options = {
+//     headers: {
+//         'Accept': 'application/json, text/plain, */*',
+//         'Content-Type': 'application/json',
+//         'Authorization': 'Bearer ' + window.localStorage.getItem('token')
+//     },
+//     method: 'get',    
+// }
+//     fetch(url, options)
+//     .then((response) => response.json())
+//     .then((complains) => {
+//         const elements = complains;
+//         console.log(elements);                           
+//             let data          
+//             for (let i = 0; i < elements.length; i++) {
+//                 data = document.createElement('option');
+//                 data.text = elements[i].companyName;
+//                 data.value = elements[i].companyId;
+//                 dropdownCompanies.add(data);                   
 
-        }
+//         }
                         
-        });   
-}
+//         });   
+// }
 
 //get all conclusions
 let dropdownConclusion = document.querySelector('#conclusionId');
@@ -199,7 +210,7 @@ function addConclusion(complainsId) {
         obj[key] = value
     });
 
-    const url = 'https://localhost:7220/api/ComplainConclusion/complains/' +complainsId+ '/conclusions';
+    const url = 'https://localhost:7220/api/InvestigationConclusion/investigations/' +complainsId+ '/conclusions';
 
     fetch(url, {
         method: 'put',
@@ -274,7 +285,7 @@ function addInvestigator(id) {
         obj[key] = value
     });
 
-    const url = 'https://localhost:7220/api/ComplainStage/investigator/complains/stage/update/' + id;
+    const url = 'https://localhost:7220/api/InvestigationStage/investigation/stage/update/' + id;
 
     fetch(url, {
         method: 'put',
@@ -304,5 +315,4 @@ addStage(urlParams.get('id'));
 
 
 loadInvestigatorsData()
-loadCompaniesData()
 loadConclusionData()

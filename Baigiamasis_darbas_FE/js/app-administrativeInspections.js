@@ -27,7 +27,7 @@ function addInvestigation() {
         obj[key] = value
     });
 
-    fetch('https://localhost:7220/api/Investigation/create', {
+    fetch('https://localhost:7220/api/AdministrativeInspection/inspection/create', {
         method: 'post',
         headers: {
             'Accept': 'application/json, text/plain, */*',
@@ -55,39 +55,7 @@ function addInvestigation() {
 
 
 
-//Load investigators list
-let dropdown = document.querySelector('#investigatorId');
-//dropdown.length = 0;
-let defaultOption = document.createElement('option');
-defaultOption.text = 'select';
-//dropdown.add(defaultOption);
-dropdown.selectedIndex = 0;
-function loadInvestigatorsData() {
-    const url = 'https://localhost:7220/api/Investigator/select';
-const options = {
-    headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + window.localStorage.getItem('token')
-    },
-    method: 'get',    
-}
-    fetch(url, options)
-    .then((response) => response.json())
-    .then((complains) => {
-        const elements = complains;
-        console.log(elements);                           
-            let data          
-            for (let i = 0; i < elements.length; i++) {
-                data = document.createElement('option');
-                data.text = elements[i].nameAndLastName;
-                data.value = elements[i].id;
-                dropdown.add(data);                   
 
-        }
-                        
-        });   
-}
 //Load companies list
 let dropdownCompanies = document.querySelector('#companyId');
 //dropdown.length = 0;
@@ -125,41 +93,41 @@ const options = {
 
 
 
-function sendData() {
-    let data = new FormData(complainForm);
-    let obj = {};
+// function sendData() {
+//     let data = new FormData(complainForm);
+//     let obj = {};
 
-    console.log(data);
+//     console.log(data);
 
-    data.forEach((value, key) => {
-        obj[key] = value
-    });
+//     data.forEach((value, key) => {
+//         obj[key] = value
+//     });
 
-    fetch('https://localhost:7220/api/Investigation/investigations', {
-        method: 'post',
-        headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + window.localStorage.getItem('token')
-        },
-        // Naudojame JSON.stringify, nes objekte neturim .json() metodo
-        body: JSON.stringify(obj) 
-    })
-    .then(async res => {
-        console.log(res.status);
+//     fetch('https://localhost:7220/api/Investigation/investigations', {
+//         method: 'post',
+//         headers: {
+//             'Accept': 'application/json, text/plain, */*',
+//             'Content-Type': 'application/json',
+//             'Authorization': 'Bearer ' + window.localStorage.getItem('token')
+//         },
+//         // Naudojame JSON.stringify, nes objekte neturim .json() metodo
+//         body: JSON.stringify(obj) 
+//     })
+//     .then(async res => {
+//         console.log(res.status);
 
-        if(res.ok)
-        {
-            // If success
-            window.location.href = "./index.html";
-        }
+//         if(res.ok)
+//         {
+//             // If success
+//             window.location.href = "./index.html";
+//         }
         
-        console.log(res);
-        var resBody = await res.json();
-        errorEle.textContent = resBody.message;
-    })
-    .catch((err) => console.log(err));
-}
+//         console.log(res);
+//         var resBody = await res.json();
+//         errorEle.textContent = resBody.message;
+//     })
+//     .catch((err) => console.log(err));
+// }
 
 function renderStages(stages) {
     let result = "";
@@ -187,7 +155,7 @@ investigationFormSbmBtn.addEventListener('click', (e) => {
 
 
 function loadData() {
-    const url = 'https://localhost:7220/api/Investigation/investigations';
+    const url = 'https://localhost:7220/api/AdministrativeInspection/inspections';
 const options = {
     headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -205,12 +173,11 @@ const options = {
         let header =
         `<div class="printedDataContainerInvestigations">
         <div class="company">Company</div>` +
-        `<div class="investigationStage">Snvestigation Stage</div>` +
+        `<div class="investigationStage">Investigation Stage</div>` +
         `<div class="investigationStarted">Investigation Started</div>` +
         `<div class="investigationEnded">Investigation  Ended</div>` +
         `<div class="conclusion">Conclusion</div>` +
         `<div class="investigator">Investigators</div>` +
-        `<div class="penalty">Penalty</div>` +
         `<div class="button_container">COMMANDS</div></div>`;
         
         menuContainer.innerHTML = header;
@@ -219,21 +186,20 @@ const options = {
         for (const element of elements) {                 
                       
             let complains =
-            `<div id="${element.investigationId}" class="printedDataContainerInvestigations">
+            `<div id="${element.id}" class="printedDataContainerInvestigations">
             <div class="company">${element.company}</div>` +
-            `<div class="investigationStage">${renderStages(element.investigationStage)}</div>` +
-            `<div class="investigationStarted">${element.investigationStarted}</div>` +
-            `<div class="investigationEnded">${element.investigationEnded}</div>` +
+            `<div class="investigationStage">${renderStages(element.investigationStages)}</div>` +
+            `<div class="investigationStarted">${element.startDate}</div>` +
+            `<div class="investigationEnded">${element.endDate}</div>` +
             `<div class="conclusion">${element.conclusion}</div>` +
-            `<div class="investigator">${renderInvestigators(element.investigator)}</div>` +
-            `<div class="penalty">${element.penalty}</div>` +
-            '<div class="button_container"><input type="button" class="editButton" value="Edit" onClick="editInvestigation(' + element.investigationId + ')" />' +
-            '<input type="button" class="updateButton" style="display:none" value="Update" onClick="updateTodo(' + element.investigationId + ')" />' +
-            '<input type="button" class="cancelButton" style="display:none" value="Cancel" onClick="cancelTodo(' + element.investigationId + ')" />' +
-            '<input type="button" class="yesButton" style="display:none" value="YES" onClick="deleteTodo(' + element.investigationId + ')" />' +
-            '<input type="button" class="noButton" style="display:none" value="NO" onClick="cancelDelete(' + element.investigationId + ')" />' +
+            `<div class="investigator">${renderInvestigators(element.investigators)}</div>` +
+            '<div class="button_container"><input type="button" class="editButton" value="Edit" onClick="editInvestigation(' + element.id + ')" />' +
+            '<input type="button" class="updateButton" style="display:none" value="Update" onClick="updateTodo(' + element.id + ')" />' +
+            '<input type="button" class="cancelButton" style="display:none" value="Cancel" onClick="cancelTodo(' + element.id + ')" />' +
+            '<input type="button" class="yesButton" style="display:none" value="YES" onClick="deleteTodo(' + element.id + ')" />' +
+            '<input type="button" class="noButton" style="display:none" value="NO" onClick="cancelDelete(' + element.id + ')" />' +
             //'<input type="button" value="Delete" onClick="deleteTodo(' + post.id + ')" /> </div> </div> '
-            '<input type="button" class="deleteButton" value="Delete" onClick="aproveDelete(' + element.investigationId + ')" /> </div> </div> '
+            '<input type="button" class="deleteButton" value="Delete" onClick="aproveDelete(' + element.id + ')" /> </div> </div> '
             
             
 
@@ -246,9 +212,8 @@ const options = {
 
 
 const editInvestigation = (id) => {
-    window.location.href = "./investigation.html?id=" + id
+    window.location.href = "./administrativeInspection.html?id=" + id
 }
 
 loadData();
-loadInvestigatorsData()
 loadCompaniesData()

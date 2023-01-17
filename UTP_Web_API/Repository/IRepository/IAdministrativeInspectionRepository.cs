@@ -4,7 +4,7 @@ namespace UTP_Web_API.Repository.IRepository
 {
     public interface IAdministrativeInspectionRepository : IRepository<AdministrativeInspection>
     {
-        Task<IEnumerable<AdministrativeInspection>> All();
+        Task<IEnumerable<AdministrativeInspection>> LoggedUserAdministrativeInspecitons();
         Task<AdministrativeInspection> GetById(int id);
     }
 }

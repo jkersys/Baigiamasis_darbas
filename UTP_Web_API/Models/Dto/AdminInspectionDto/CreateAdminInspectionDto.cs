@@ -2,7 +2,7 @@
 {
     public class CreateAdminInspectionDto
     {
-        public string InvestigationStages { get; set; }
+        public string InvestigationStage { get; set; }
         public int CompanyId { get; set; }  
     }
 }

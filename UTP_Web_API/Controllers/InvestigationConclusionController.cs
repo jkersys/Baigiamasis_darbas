@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UTP_Web_API.Models.Dto.ConclusionDto;
@@ -30,20 +31,21 @@ namespace UTP_Web_API.Controllers
         /// <summary>
         /// Pridedama isvada prie investigation
         /// </summary>
-        /// <param name="complainId"></param>
+        /// <param name="investigationId"></param>
         /// <param name="conclusion"></param>
         /// <returns></returns>
         /// <response code="204">No Content</response>
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpPut("complains/{complainId:int}/conclusions")]
+        [HttpPut("investigations/{investigationId:int}/conclusions")]
         // [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> AddConclusionToComplain(int complainId, AddConclusionToCaseDto conclusion)
+        [Authorize]
+        public async Task<ActionResult> AddConclusionToComplain(int investigationId, AddConclusionToCaseDto conclusion)
         {
             try
             {
@@ -54,18 +56,18 @@ namespace UTP_Web_API.Controllers
                     _logger.LogInformation($"{DateTime.Now} User have no rights to add conclusion to investigation");
                     return BadRequest();
                 }
-                if (conclusion == null || complainId == 0)
+                if (conclusion == null || investigationId == 0)
                 {
-                    _logger.LogInformation($"{DateTime.Now} input {complainId} Or {conclusion} not valid");
+                    _logger.LogInformation($"{DateTime.Now} input {investigationId} Or {conclusion} not valid");
                     return BadRequest();
                 }
 
-                var foundComplain = await _investigationRepo.GetById(complainId);
+                var foundComplain = await _investigationRepo.GetById(investigationId);
                 var foundConclusion = await _conclusionRepo.GetAsync(i => i.ConclusionId == conclusion.ConclusionId);
 
                 if (foundComplain == null || foundConclusion == null)
                 {
-                    _logger.LogInformation($"{DateTime.Now} complain Nr. {complainId} or conclusion {conclusion.ConclusionId} not found");
+                    _logger.LogInformation($"{DateTime.Now} complain Nr. {investigationId} or conclusion {conclusion.ConclusionId} not found");
                     return NotFound();
                 }
 
@@ -84,7 +86,7 @@ namespace UTP_Web_API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"{DateTime.Now} GetComplainById exception error.");
+                _logger.LogError(ex, $"{DateTime.Now} AddConclusionToComplain exception error.");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }

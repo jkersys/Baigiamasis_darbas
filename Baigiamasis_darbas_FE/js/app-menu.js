@@ -1,3 +1,15 @@
+//Tikrinam ar prisijungęs
+let isConected = () => {
+    KeyName = Object.getOwnPropertyNames(localStorage)
+    if (KeyName != "token") {
+        localStorage.clear();
+        window.location.href = '../index.html'
+    }
+}
+//nuskaitom raktą
+let KeyName = Object.getOwnPropertyNames(localStorage)
+setInterval(isConected, 1000)
+
 const complainForm = document.querySelector('#complain-form');
 const complainFormSbmBtn = document.querySelector('#complain-form-submit');
 const errorEle = document.querySelector(".error-message");

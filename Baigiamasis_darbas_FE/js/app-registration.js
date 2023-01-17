@@ -1,3 +1,5 @@
+
+
 const registrationForm = document.querySelector('#registration-form');
 const registrationFormSbmBtn = document.querySelector('#registration-form-submit');
 const errorEle = document.querySelector(".error-message");

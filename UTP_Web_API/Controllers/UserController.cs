@@ -101,38 +101,8 @@ namespace UTP_Web_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        [HttpPatch("patch/{id:int}", Name = "UpdateUserRole")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateUserRole(int id, JsonPatchDocument<LocalUser> request)
-        {
-            if (id == 0 || request == null)
-            {
-                return BadRequest();
-            }
-
-            var userExist = await _userRepo.ExistAsync(id);
-            if (!userExist)
-            {
-                return NotFound();
-            }
-
-            var foundUser = await _userRepo.GetAsync(d => d.Id == id);
-
-            request.ApplyTo(foundUser, ModelState);
-
-            await _userRepo.UpdateAsync(foundUser);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            return NoContent();
-
-        }
-        }
+    }
 }
+
+
 

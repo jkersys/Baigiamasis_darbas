@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using UTP_Web_API.Models;
 using UTP_Web_API.Models.Dto.ConclusionDto;
 using UTP_Web_API.Repository.IRepository;
@@ -14,13 +16,16 @@ namespace UTP_Web_API.Controllers
         private readonly IConclusionRepository _conclusionRepo;
         private readonly IConclusionAdapter _conclusionAdapter;
         private readonly ILogger<ConclusionController> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public ConclusionController(IConclusionRepository conclusionRepo, IConclusionAdapter conclusionAdapter, ILogger<ConclusionController> logger)
+
+        public ConclusionController(IHttpContextAccessor httpContextAccessor, IConclusionRepository conclusionRepo, IConclusionAdapter conclusionAdapter, ILogger<ConclusionController> logger)
         {
             _conclusionRepo = conclusionRepo;
             _conclusionAdapter = conclusionAdapter;
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
         /// <summary>
         /// Grazinamos visos galimos isvados, kurios naudojamos front end dalyje selectoriuje
@@ -34,11 +39,18 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ConclusonResponseForFrontEnd>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
         public async Task<IActionResult> GetAllConclusionsForFrontEndSelector()
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} atempt to get all Conclusions for front end selector");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director" && currentUserRole != "Investigator")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to open conclusions");
+                    return BadRequest("You have no right to open conclusions");
+                }
                 var conclusions = await _conclusionRepo.GetAllAsync();
 
                 if (conclusions == null)
@@ -69,11 +81,19 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GetConclusionDto>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+
         public async Task<IActionResult> GetAllConclusions()
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} atempt to get all Conclusions");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director" && currentUserRole != "Investigator")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to open conclusions");
+                    return BadRequest("You have no right to open conclusions");
+                }
                 var conclusions = await _conclusionRepo.GetAllAsync();
 
             if (conclusions == null)
@@ -100,18 +120,27 @@ namespace UTP_Web_API.Controllers
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpGet("conclusion/{id:int}", Name = "GetConclusion")]
+        [HttpGet("{id:int}", Name = "GetConclusion")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetConclusionDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces("application/json")]
         [Consumes("application/json")]
+        [Authorize]
+
         public async Task<ActionResult<GetConclusionDto>> GetConclusionById(int id)
         {
             try
             {
+
                 _logger.LogInformation($"{DateTime.Now} atempt to get conclusion {id}");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director" && currentUserRole != "Investigator")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to open conclusions");
+                    return BadRequest("You have no right to open conclusions");
+                }
                 if (id == 0)
                 {
                     _logger.LogInformation($"{DateTime.Now} input {id} is not valid");
@@ -143,18 +172,26 @@ namespace UTP_Web_API.Controllers
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpPut("conclusion/update/{id:int}")]
+        [HttpPut("update/{id:int}")]
         // [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+
         public async Task<ActionResult> UpdateConclusion(int id, AddOrUpdateConclusionDto updateConclusionDto)
         {
 
             try
             {
                 _logger.LogInformation($"{DateTime.Now} attempt to update conclusion {id}");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to update conclusions");
+                    return BadRequest("You have no right to update conclusions");
+                }
 
                 if (id == 0 || updateConclusionDto == null)
                 {
@@ -189,16 +226,24 @@ namespace UTP_Web_API.Controllers
         /// <response code="201">Created</response>
         /// <response code="400">Bad request</response>
         /// <response code="500">Internal server error</response>        
-        [HttpPost("complain")]
+        [HttpPost("create")]
         // [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+
         public async Task<ActionResult<string>> CreateConclusion(AddOrUpdateConclusionDto CreateConclusionDto)
         {
             try 
             {
                 _logger.LogError($"{DateTime.Now} attempt to create new conclusion.");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to create conclusions");
+                    return BadRequest("You have no right to create conclusions");
+                }
                 if (CreateConclusionDto == null)
             {
                     _logger.LogError($"{DateTime.Now} input {CreateConclusionDto} not valid");
@@ -228,31 +273,44 @@ namespace UTP_Web_API.Controllers
         /// <response code="400">Bad request</response>
         /// <response code="404">Not Found</response>
         /// <response code="500">Internal server error</response>
-        [HttpDelete("conclusion/delete/{id:int}")]
+        [HttpDelete("delete/{id:int}")]
         //[Authorize(Roles = "super-admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
+
         public async Task<ActionResult> DeleteConclusion(int id)
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} attempt to delete conclusion id {id}.");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no right to delete conclusions");
+                    return BadRequest("You have no right to delete conclusions");
+                }
                 if (id == 0)
             {
                 return BadRequest();
             }
 
-            var conclusion = await _conclusionRepo.GetAsync(d => d.ConclusionId == id);
+            var conclusion = await _conclusionRepo.GetConclusionById(id);
 
             if (conclusion == null)
             {
                     _logger.LogInformation($"{DateTime.Now} Conclusion Nr. {id} not found");
                     return NotFound();
             }
+                if(conclusion.Investigations.Count > 0 || conclusion.AdministrativeInspections.Count > 0 || conclusion.Complains.Count > 0)
+                {
+                    _logger.LogInformation($"{DateTime.Now} Conclusion already aded to cases, and cant be deleted");
+                    return BadRequest("Conclusion already aded to cases");
+                }
 
-            await _conclusionRepo.RemoveAsync(conclusion);
+                await _conclusionRepo.RemoveAsync(conclusion);
 
             return NoContent();
         }

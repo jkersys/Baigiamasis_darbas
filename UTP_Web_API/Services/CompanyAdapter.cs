@@ -11,6 +11,7 @@ namespace UTP_Web_API.Services
         {
             return new GetCompanyDto()
             {
+                CompanyId = company.CompanyId,
                 CompanyName = company.CompanyName,
                 CompanyRegistrationNumber = company.CompanyRegistrationNumber,
                 CompanyAdress = company.CompanyAdress,

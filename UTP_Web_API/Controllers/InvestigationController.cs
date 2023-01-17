@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using UTP_Web_API.Models;
@@ -48,11 +49,18 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Produces("application/json")]
         [Consumes("application/json")]
+        [Authorize]
         public async Task<ActionResult<GetOneInvestigationDto>> GetInvestigationById(int id)
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} atempt to get investigation with id {id} ");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Investigator" && currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no rights to get investigation data");
+                    return BadRequest();
+                }
                 if (id == 0)
                 {
                     _logger.LogInformation($"{DateTime.Now} Input {id} is not valid");
@@ -94,6 +102,12 @@ namespace UTP_Web_API.Controllers
             try
             {
                 _logger.LogInformation($"{DateTime.Now} atempt to get all investigations");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Investigator" && currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no rights to add get investigations");
+                    return BadRequest();
+                }
                 var investigations = await _investigatonRepo.All();
 
                 if (investigations == null)
@@ -128,6 +142,7 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
         public async Task<ActionResult> AddInvestigatorToInvestigation(int id, AddInvestigatorDto addInvestigatorDto)
         {
             try 
@@ -186,11 +201,18 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(GetInvestigationsDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
         public async Task<ActionResult<GetInvestigationsDto>> CreateInvestigation(CreateInvestigationDto investigationDto)
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} Atempt to create investigation");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Investigator" && currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no rights to add create investigation");
+                    return BadRequest();
+                }
 
                 if (investigationDto == null)
                 {
@@ -242,11 +264,18 @@ namespace UTP_Web_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize]
         public async Task<ActionResult> DeleteInvestigation(int id)
         {
             try
             {
                 _logger.LogInformation($"{DateTime.Now} atempt to delete investigation with id {id} ");
+                var currentUserRole = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Role);
+                if (currentUserRole != "Investigator" && currentUserRole != "Admin" && currentUserRole != "Director")
+                {
+                    _logger.LogInformation($"{DateTime.Now} User have no rights to delete inspection");
+                    return BadRequest();
+                }
                 if (id == 0)
             {
                     _logger.LogInformation($"{DateTime.Now} invalid input {id}");
@@ -259,7 +288,8 @@ namespace UTP_Web_API.Controllers
                     _logger.LogInformation($"{DateTime.Now} investigation with id {id} was not found");
                     return NotFound();
             }
-            await _investigatonRepo.RemoveAsync(investigation);
+                
+                await _investigatonRepo.RemoveAsync(investigation);
             return NoContent();
             }
             catch (Exception ex)

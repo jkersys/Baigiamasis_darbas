@@ -22,15 +22,36 @@
                 <a href="./companies.html">Imones</a>
                 <a href="./Investigators.html">Investigators</a>
                 <a href="./Conclusions.html">Conclusions</a>
+
+
+
+
             </nav>
-            
         </header>
         <article>
-            <h2>Sveiki, atvykę į Priežiūros institucijos svetainę</h2>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis architecto similique corporis culpa impedit porro assumenda, facere sequi officia dolor sit accusamus laudantium dolorem, inventore saepe cumque, natus eaque doloribus.</p>            
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde animi vero ratione, ullam sunt accusantium et cupiditate adipisci, tempora minima reprehenderit tempore corrupti excepturi temporibus eos suscipit, quae ad veritatis!</p>
+            <hr>
+            <section>
+                <h2>Čia pateikiama informacija apie administracines patikras</h2>
+                <form id="investigation-form">
+                    <div class="investigation-input-container">
+                    <div>   <label for="company">Select company</label>
+                   <select name="companyId" id="companyId" required></select></div>    
+                            
+                        <div class="label-container"><label for="name">Stage</label>
+                      <input type="text" name="investigationStage" id="investigationStage" placeholder="" ></div>
+
+                        <div> <input type="button" id="investigation-form-submit" value="Submit"></div>
+                     <br/><br/>                                       
+                     </div>
+                    </form>
+        </div>
+            
+            <hr>
+            <div id="menu-items">
+              
+            </div>
         </article>
     </main>
-    <script src="js/app.js"></script>
+    <script src="js/app-administrativeInspections.js"></script>
 </body>
 </html>

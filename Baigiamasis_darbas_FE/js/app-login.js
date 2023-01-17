@@ -1,4 +1,6 @@
-const loginForm  = document.querySelector('#login-form');
+
+
+const loginForm = document.querySelector('#login-form');
 const loginFormSbmBtn = document.querySelector('#login-form-submit');
 const errorEle = document.querySelector(".error-message");
 
@@ -42,3 +44,4 @@ loginFormSbmBtn.addEventListener('click', (e) => {
     e.preventDefault(); // Breaks manual refresh after submit
     sendData();
 })
+
